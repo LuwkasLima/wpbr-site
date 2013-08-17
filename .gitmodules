@@ -4,3 +4,6 @@
 [submodule "wp-content/themes/oportunidades"]
 	path = wp-content/themes/oportunidades
 	url = git@github.com:WP-Brasil/oportunidades.git
+[submodule "wp-content/languages"]
+	path = wp-content/languages
+	url = git@github.com:WP-Brasil/traducoes.git
