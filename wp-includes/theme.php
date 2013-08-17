@@ -340,7 +340,7 @@ function search_theme_directories( $force = false ) {
 
 	// Set up maybe-relative, maybe-absolute array of theme directories.
 	// We always want to return absolute, but we need to cache relative
-	// use in for get_theme_root().
+	// to use in get_theme_root().
 	foreach ( $wp_theme_directories as $theme_root ) {
 		if ( 0 === strpos( $theme_root, WP_CONTENT_DIR ) )
 			$relative_theme_roots[ str_replace( WP_CONTENT_DIR, '', $theme_root ) ] = $theme_root;
@@ -373,8 +373,10 @@ function search_theme_directories( $force = false ) {
 
 		// Start with directories in the root of the current theme directory.
 		$dirs = @ scandir( $theme_root );
-		if ( ! $dirs )
-			return false;
+		if ( ! $dirs ) {
+			trigger_error( "$theme_root is not readable", E_USER_NOTICE );
+			continue;
+		}
 		foreach ( $dirs as $dir ) {
 			if ( ! is_dir( $theme_root . '/' . $dir ) || $dir[0] == '.' || $dir == 'CVS' )
 				continue;
@@ -390,8 +392,10 @@ function search_theme_directories( $force = false ) {
 				// wp-content/themes/a-folder-of-themes/*
 				// wp-content/themes is $theme_root, a-folder-of-themes is $dir, then themes are $sub_dirs
 				$sub_dirs = @ scandir( $theme_root . '/' . $dir );
-				if ( ! $sub_dirs )
-					return false;
+				if ( ! $sub_dirs ) {
+					trigger_error( "$theme_root/$dir is not readable", E_USER_NOTICE );
+					continue;
+				}
 				foreach ( $sub_dirs as $sub_dir ) {
 					if ( ! is_dir( $theme_root . '/' . $dir . '/' . $sub_dir ) || $dir[0] == '.' || $dir == 'CVS' )
 						continue;
@@ -544,7 +548,7 @@ function locale_stylesheet() {
 /**
  * Start preview theme output buffer.
  *
- * Will only preform task if the user has permissions and template and preview
+ * Will only perform task if the user has permissions and template and preview
  * query variables exist.
  *
  * @since 2.6.0
@@ -631,7 +635,7 @@ function preview_theme_ob_filter( $content ) {
  */
 function preview_theme_ob_filter_callback( $matches ) {
 	if ( strpos($matches[4], 'onclick') !== false )
-		$matches[4] = preg_replace('#onclick=([\'"]).*?(?<!\\\)\\1#i', '', $matches[4]); //Strip out any onclicks from rest of <a>. (?<!\\\) means to ignore the '" if its escaped by \  to prevent breaking mid-attribute.
+		$matches[4] = preg_replace('#onclick=([\'"]).*?(?<!\\\)\\1#i', '', $matches[4]); //Strip out any onclicks from rest of <a>. (?<!\\\) means to ignore the '" if it's escaped by \  to prevent breaking mid-attribute.
 	if (
 		( false !== strpos($matches[3], '/wp-admin/') )
 	||
@@ -981,12 +985,12 @@ function is_random_header_image( $type = 'any' ) {
 }
 
 /**
- * Display header image path.
+ * Display header image URL.
  *
  * @since 2.1.0
  */
 function header_image() {
-	echo get_header_image();
+	echo esc_url( get_header_image() );
 }
 
 /**
@@ -1013,8 +1017,10 @@ function get_uploaded_header_images() {
 		$header_images[$header_index]['attachment_id'] =  $header->ID;
 		$header_images[$header_index]['url'] =  $url;
 		$header_images[$header_index]['thumbnail_url'] =  $url;
-		$header_images[$header_index]['width'] = $header_data['width'];
-		$header_images[$header_index]['height'] = $header_data['height'];
+		if ( isset( $header_data['width'] ) )
+			$header_images[$header_index]['width'] = $header_data['width'];
+		if ( isset( $header_data['height'] ) )
+			$header_images[$header_index]['height'] = $header_data['height'];
 	}
 
 	return $header_images;
@@ -1489,7 +1495,7 @@ function _remove_theme_support( $feature ) {
 
 	switch ( $feature ) {
 		case 'custom-header' :
-			if ( false === did_action( 'wp_loaded', '_custom_header_background_just_in_time' ) )
+			if ( ! did_action( 'wp_loaded' ) )
 				break;
 			$support = get_theme_support( 'custom-header' );
 			if ( $support[0]['wp-head-callback'] )
@@ -1499,7 +1505,7 @@ function _remove_theme_support( $feature ) {
 			break;
 
 		case 'custom-background' :
-			if ( false === did_action( 'wp_loaded', '_custom_header_background_just_in_time' ) )
+			if ( ! did_action( 'wp_loaded' ) )
 				break;
 			$support = get_theme_support( 'custom-background' );
 			remove_action( 'wp_head', $support[0]['wp-head-callback'] );

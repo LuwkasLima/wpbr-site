@@ -89,7 +89,7 @@ function add_feed($feedname, $function) {
 		$wp_rewrite->feeds[] = $feedname;
 	$hook = 'do_feed_' . $feedname;
 	// Remove default function hook
-	remove_action($hook, $hook, 10, 1);
+	remove_action($hook, $hook);
 	add_action($hook, $function, 10, 1);
 	return $hook;
 }
@@ -207,11 +207,18 @@ define('EP_AUTHORS', 2048);
 define('EP_PAGES', 4096);
 
 /**
+ * Endpoint Mask for all archive views.
+ *
+ * @since 3.7.0
+ */
+define( 'EP_ALL_ARCHIVES', EP_DATE | EP_YEAR | EP_MONTH | EP_DAY | EP_CATEGORIES | EP_TAGS | EP_AUTHORS );
+
+/**
  * Endpoint Mask for everything.
  *
  * @since 2.1.0
  */
-define('EP_ALL', 8191);
+define( 'EP_ALL', EP_PERMALINK | EP_ATTACHMENT | EP_ROOT | EP_COMMENTS | EP_SEARCH | EP_PAGES | EP_ALL_ARCHIVES );
 
 /**
  * Add an endpoint, like /trackback/.
@@ -315,7 +322,7 @@ function url_to_postid($url) {
 
 	// Strip 'index.php/' if we're not using path info permalinks
 	if ( !$wp_rewrite->using_index_permalinks() )
-		$url = str_replace('index.php/', '', $url);
+		$url = str_replace( $wp_rewrite->index . '/', '', $url );
 
 	if ( false !== strpos($url, home_url()) ) {
 		// Chop off http://domain.com
@@ -1435,8 +1442,8 @@ class WP_Rewrite {
 					if ( !empty($endpoints) ) {
 						foreach ( (array) $ep_query_append as $regex => $ep ) {
 							if ( $ep[0] & EP_ATTACHMENT ) {
-								$rewrite[$sub1 . $regex] = $subquery . $ep[1] . $this->preg_index(2);
-								$rewrite[$sub2 . $regex] = $subquery . $ep[1] . $this->preg_index(2);
+								$rewrite[$sub1 . $regex] = $subquery . $ep[1] . $this->preg_index(3);
+								$rewrite[$sub2 . $regex] = $subquery . $ep[1] . $this->preg_index(3);
 							}
 						}
 					}
@@ -1552,7 +1559,7 @@ class WP_Rewrite {
 		$root_rewrite = apply_filters('root_rewrite_rules', $root_rewrite);
 
 		// Comments
-		$comments_rewrite = $this->generate_rewrite_rules($this->root . $this->comments_base, EP_COMMENTS, true, true, true, false);
+		$comments_rewrite = $this->generate_rewrite_rules($this->root . $this->comments_base, EP_COMMENTS, false, true, true, false);
 		$comments_rewrite = apply_filters('comments_rewrite_rules', $comments_rewrite);
 
 		// Search

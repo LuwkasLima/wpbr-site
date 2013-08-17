@@ -14,6 +14,23 @@
  */
 
 /**
+ * Get the "dashboard blog", the blog where users without a blog edit their profile data.
+ * Dashboard blog functionality was removed in WordPress 3.1, replaced by the user admin.
+ *
+ * @since MU
+ * @deprecated 3.1.0
+ * @see get_blog_details()
+ * @return int
+ */
+function get_dashboard_blog() {
+    _deprecated_function( __FUNCTION__, '3.1' );
+    if ( $blog = get_site_option( 'dashboard_blog' ) )
+        return get_blog_details( $blog );
+
+    return get_blog_details( $GLOBALS['current_site']->blog_id );
+}
+
+/**
  * @since MU
  * @deprecated 3.0.0
  * @deprecated Use wp_generate_password()
@@ -269,4 +286,33 @@ function wpmu_admin_redirect_add_updated_param( $url = '' ) {
 			return $url . '&updated=true';
 	}
 	return $url;
+}
+
+/**
+ * Get a numeric user ID from either an email address or a login.
+ *
+ * A numeric string is considered to be an existing user ID
+ * and is simply returned as such.
+ *
+ * @since MU
+ * @deprecated 3.6.0
+ * @deprecated Use get_user_by()
+ * @uses get_user_by()
+ *
+ * @param string $string Either an email address or a login.
+ * @return int
+ */
+function get_user_id_from_string( $string ) {
+	_deprecated_function( __FUNCTION__, '3.6', 'get_user_by()' );
+
+	if ( is_email( $string ) )
+		$user = get_user_by( 'email', $string );
+	elseif ( is_numeric( $string ) )
+		return $string;
+	else
+		$user = get_user_by( 'login', $string );
+
+	if ( $user )
+		return $user->ID;
+	return 0;
 }
