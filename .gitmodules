@@ -1,0 +1,6 @@
+[submodule "wp-content/themes/participe"]
+	path = wp-content/themes/participe
+	url = git@github.com:WP-Brasil/participe.git
+[submodule "wp-content/themes/oportunidades"]
+	path = wp-content/themes/oportunidades
+	url = git@github.com:WP-Brasil/oportunidades.git
