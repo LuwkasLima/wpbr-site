@@ -18,7 +18,7 @@ Estes são os passos para reproduzir o ambiente:
    desenvolvimento](http://wp-brasil.org/dev/devdump.tar.bz2), descompacte e
    importe no seu servidor MySQL.
 
-3. Copie o arquivo `wp-config-sample.php` para `wp-config.php` e insira as
+3. Copie o arquivo `wp-config-dev.php` para `wp-config.php` e insira as
    credenciais de conexão neste banco de dados.
 
 4. Abra o seu arquivo de hosts no Linux (`/etc/hosts`) ou no Windows
