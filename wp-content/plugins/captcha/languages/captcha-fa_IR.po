@@ -1,0 +1,431 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: captcha\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-06-03 15:40+0300\n"
+"PO-Revision-Date: 2013-06-03 15:40+0300\n"
+"Last-Translator: \n"
+"Language-Team: bestwebsoft.com <plugin@bestwebsoft.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fa_IR\n"
+"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Generator: Poedit 1.5.4\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: captcha.php:31
+msgid "Login form"
+msgstr "فرم ورود"
+
+#: captcha.php:32
+#, fuzzy
+msgid "Registration form"
+msgstr "فرم ثبت نام"
+
+#: captcha.php:32
+msgid "Register form"
+msgstr "فرم ثبت نام"
+
+#: captcha.php:33
+#, fuzzy
+msgid "Reset Password form"
+msgstr "فرم فراموشی رمز عبور"
+
+#: captcha.php:33
+msgid "Lost password form"
+msgstr "فرم فراموشی رمز عبور"
+
+#: captcha.php:34
+msgid "Comments form"
+msgstr "فرم دیدگاه ها"
+
+#: captcha.php:35
+msgid "Hide CAPTCHA for registered users"
+msgstr "عدم نمایش معادله ی امنیتی برای کاربران ثبت نام شده"
+
+#: captcha.php:40
+msgid "Plus (&#43;)"
+msgstr "جمع (&#43;)"
+
+#: captcha.php:40
+msgid "Plus"
+msgstr "جمع"
+
+#: captcha.php:41
+msgid "Minus (&minus;)"
+msgstr "تفریق (&minus;)"
+
+#: captcha.php:41
+msgid "Minus"
+msgstr "تفریق"
+
+#: captcha.php:42
+#, fuzzy
+msgid "Multiplication (&times;)"
+msgstr "ضرب (&times;)"
+
+#: captcha.php:42
+#, fuzzy
+msgid "Multiply"
+msgstr "ضرب (&times;)"
+
+#: captcha.php:47
+msgid "Numbers"
+msgstr "ارقام"
+
+#: captcha.php:48
+msgid "Words"
+msgstr "کلمات"
+
+#: captcha.php:123
+#, fuzzy
+msgid "Pro plugins"
+msgstr "افزونه های BWS"
+
+#: captcha.php:126
+#: captcha.php:152
+msgid "Activated plugins"
+msgstr "افزونه های فعال"
+
+#: captcha.php:128
+#: captcha.php:136
+#: captcha.php:144
+#: captcha.php:154
+#: captcha.php:162
+#: captcha.php:170
+msgid "Read more"
+msgstr "مطالعه ی بیشتر"
+
+#: captcha.php:128
+#: captcha.php:154
+#: captcha.php:275
+#: captcha.php:284
+msgid "Settings"
+msgstr "تنظیمات"
+
+#: captcha.php:134
+#: captcha.php:160
+msgid "Installed plugins"
+msgstr "افزونه های نصب شده"
+
+#: captcha.php:142
+#: captcha.php:168
+msgid "Recommended plugins"
+msgstr "افزونه های پیشنهادی"
+
+#: captcha.php:144
+msgid "Purchase"
+msgstr ""
+
+#: captcha.php:149
+#, fuzzy
+msgid "Free plugins"
+msgstr "افزونه های پیشنهادی"
+
+#: captcha.php:170
+msgid "Download"
+msgstr "دانلود"
+
+#: captcha.php:170
+#, php-format
+msgid "Install %s"
+msgstr "نصب %s"
+
+#: captcha.php:170
+msgid "Install now from wordpress.org"
+msgstr "همین الان از wordpress.org نصب کن"
+
+#: captcha.php:175
+msgid "If you have any questions, please contact us via"
+msgstr ""
+
+#: captcha.php:182
+#: captcha.php:347
+#, fuzzy
+msgid "Captcha Settings"
+msgstr "تنظیمات معادله ی امنیتی"
+
+#: captcha.php:182
+msgid "Captcha"
+msgstr "معادله ی امنیتی"
+
+#: captcha.php:285
+msgid "FAQ"
+msgstr "پرسش های متداول"
+
+#: captcha.php:286
+msgid "Support"
+msgstr "پشتیبانی"
+
+#: captcha.php:330
+#, fuzzy
+msgid "Please select one item in the block Arithmetic and Complexity for CAPTCHA"
+msgstr "لطفاً یکی از گزینه های موجود در بلوک های مربوط به عمل های ریاضی و میزان دشواری معادله ی امنیتی را انتخاب کنید"
+
+#: captcha.php:334
+msgid "Options saved."
+msgstr "تنظیمات ذخیره شد"
+
+#: captcha.php:353
+#, fuzzy
+msgid "Enable CAPTCHA for:"
+msgstr "معادله امنیتی را فعال کن در:"
+
+#: captcha.php:367
+#: captcha.php:369
+#: captcha.php:372
+msgid "Contact form"
+msgstr "فرم تماس"
+
+#: captcha.php:367
+#: captcha.php:369
+#: captcha.php:372
+#, fuzzy
+msgid "(powered by bestwebsoft.com)"
+msgstr "(قدرت گرفته از bestwebsoft.com)"
+
+#: captcha.php:369
+msgid "Activate contact form"
+msgstr "فرم تماس را فعال کن"
+
+#: captcha.php:372
+msgid "Download contact form"
+msgstr "فرم تماس را دانلود کن"
+
+#: captcha.php:374
+#, fuzzy
+msgid "If you would like to customize this plugin for a custom form, please contact us via"
+msgstr "اگر می خواهید این افزونه را به عنوان یک فرم اختصاصی سفارشی سازی کنید، لطفاً از طریق <a href=\"Mailto:plugin@bestwebsoft.com\">plugin@bestwebsoft.com</a> با ما تماس بگیرید یا اینکه فرم تماس موجود در سایت ما را پُر کنید"
+
+#: captcha.php:378
+#, fuzzy
+msgid "Title for CAPTCHA in the form"
+msgstr "برچسب معادله ی امنیتی در فرم"
+
+#: captcha.php:382
+msgid "Arithmetic actions for CAPTCHA"
+msgstr "عمل های ریاضی برای معادله ی امنیتی"
+
+#: captcha.php:391
+msgid "CAPTCHA complexity level"
+msgstr ""
+
+#: captcha.php:401
+msgid "Save Changes"
+msgstr "ذخیره سازی تغییرات"
+
+#: captcha.php:445
+#: captcha.php:451
+#: captcha.php:614
+#: captcha.php:621
+#: captcha.php:630
+#: captcha.php:637
+msgid "ERROR"
+msgstr "خطا"
+
+#: captcha.php:445
+#: captcha.php:466
+#: captcha.php:582
+#: captcha.php:614
+#: captcha.php:630
+#: captcha.php:652
+msgid "Please fill the form."
+msgstr ""
+
+#: captcha.php:451
+#: captcha.php:477
+#: captcha.php:621
+#: captcha.php:637
+#, fuzzy
+msgid "Please enter a valid CAPTCHA value."
+msgstr "لطفاً معادله ی امنیتی را پُر کنید."
+
+#: captcha.php:588
+#: captcha.php:659
+#, fuzzy
+msgid "Error: You have entered an incorrect CAPTCHA value. Click the BACK button on your browser, and try again."
+msgstr "خطا: پاسخ وارد شده توسط شما در معادله ی امنیتی نادرست بود. لطفاً دکمه ی بازگشت مرورگر خود را بفشارید و مجدداً تلاش کنید."
+
+#: captcha.php:670
+#: captcha.php:898
+msgid "zero"
+msgstr "هیچ"
+
+#: captcha.php:671
+#: captcha.php:899
+#: captcha.php:1094
+msgid "one"
+msgstr "یک"
+
+#: captcha.php:672
+#: captcha.php:900
+msgid "two"
+msgstr "دو"
+
+#: captcha.php:673
+#: captcha.php:901
+msgid "three"
+msgstr "سه"
+
+#: captcha.php:674
+#: captcha.php:902
+msgid "four"
+msgstr "چهار"
+
+#: captcha.php:675
+#: captcha.php:903
+msgid "five"
+msgstr "پنج"
+
+#: captcha.php:676
+#: captcha.php:904
+#: captcha.php:1094
+msgid "six"
+msgstr "شش"
+
+#: captcha.php:677
+#: captcha.php:905
+#: captcha.php:1082
+#: captcha.php:1088
+msgid "seven"
+msgstr "هفت"
+
+#: captcha.php:678
+#: captcha.php:906
+#: captcha.php:1085
+msgid "eight"
+msgstr "هشت"
+
+#: captcha.php:679
+#: captcha.php:907
+msgid "nine"
+msgstr "نُه"
+
+#: captcha.php:682
+#: captcha.php:910
+msgid "eleven"
+msgstr "یازده"
+
+#: captcha.php:683
+#: captcha.php:911
+msgid "twelve"
+msgstr "دوازده"
+
+#: captcha.php:684
+#: captcha.php:912
+msgid "thirteen"
+msgstr "سیزده"
+
+#: captcha.php:685
+#: captcha.php:913
+msgid "fourteen"
+msgstr "چهارده"
+
+#: captcha.php:686
+#: captcha.php:914
+msgid "fifteen"
+msgstr "پانزده"
+
+#: captcha.php:687
+#: captcha.php:915
+msgid "sixteen"
+msgstr "شانزده"
+
+#: captcha.php:688
+#: captcha.php:916
+msgid "seventeen"
+msgstr "هفده"
+
+#: captcha.php:689
+#: captcha.php:917
+msgid "eighteen"
+msgstr "هجده"
+
+#: captcha.php:690
+#: captcha.php:918
+msgid "nineteen"
+msgstr "نوزده"
+
+#: captcha.php:693
+#: captcha.php:921
+msgid "ten"
+msgstr "ده"
+
+#: captcha.php:694
+#: captcha.php:922
+msgid "twenty"
+msgstr "بیست"
+
+#: captcha.php:695
+#: captcha.php:923
+msgid "thirty"
+msgstr "سی"
+
+#: captcha.php:696
+#: captcha.php:924
+msgid "forty"
+msgstr "چهل"
+
+#: captcha.php:697
+#: captcha.php:925
+msgid "fifty"
+msgstr "پنجاه"
+
+#: captcha.php:698
+#: captcha.php:926
+msgid "sixty"
+msgstr "شصت"
+
+#: captcha.php:699
+#: captcha.php:927
+msgid "seventy"
+msgstr "هفتاد"
+
+#: captcha.php:700
+#: captcha.php:928
+msgid "eighty"
+msgstr "هشتاد"
+
+#: captcha.php:701
+#: captcha.php:929
+msgid "ninety"
+msgstr "نود"
+
+#: captcha.php:788
+#: captcha.php:1016
+msgid "and"
+msgstr "و"
+
+#: captcha.php:807
+#, fuzzy
+msgid "Encryption password is not set"
+msgstr "رمز عبوری برای رمزگشایی تعیین نشده است"
+
+#: captcha.php:826
+#, fuzzy
+msgid "Decryption password is not set"
+msgstr "رمز عبوری برای رمزگشایی تعیین نشده است"
+
+#, fuzzy
+#~ msgid ""
+#~ "If you have any questions, please contact us via plugin@bestwebsoft.com "
+#~ "or fill in the contact form on our website"
+#~ msgstr ""
+#~ "اگر سوالی دارید، از طریق آدرس ایمیل plugin@bestwebsoft.com با ما تماس "
+#~ "بگیرید یا اینکه فرم تماس موجود در سایت ما را پُر کنید"
+#~ msgid "Increase"
+#~ msgstr "افزایش"
+#~ msgid "Difficulty for CAPTCHA"
+#~ msgstr "میزان دشواری معادله ی امنیتی"
+#~ msgid "That CAPTCHA was incorrect."
+#~ msgstr "جواب معدله ی امنیتی نادرست بود."
+#~ msgid "The password of encryption is not set"
+#~ msgstr "رمز عبوری برای رمزگذاری تعیین نشده است"
+#~ msgid "null"
+#~ msgstr "هیچ"
+#~ msgid "Install Now"
+#~ msgstr "همین الان نصب کن"
+

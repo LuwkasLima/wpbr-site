@@ -1,0 +1,432 @@
+# Byrial Ole Jensen <byrial@vip.cybercity.dk>, 2011.
+msgid ""
+msgstr ""
+"Project-Id-Version: captcha\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-06-03 15:41+0300\n"
+"PO-Revision-Date: 2013-06-03 15:41+0300\n"
+"Last-Translator: \n"
+"Language-Team: Arnas <arnas.metal@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: da\n"
+"X-Generator: Poedit 1.5.4\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: captcha.php:31
+msgid "Login form"
+msgstr "Prisijungimo forma"
+
+#: captcha.php:32
+#, fuzzy
+msgid "Registration form"
+msgstr "Registravimosi forma"
+
+#: captcha.php:32
+msgid "Register form"
+msgstr "Registravimosi forma"
+
+#: captcha.php:33
+#, fuzzy
+msgid "Reset Password form"
+msgstr "Pamesto slaptažodžio forma"
+
+#: captcha.php:33
+msgid "Lost password form"
+msgstr "Pamesto slaptažodžio forma"
+
+#: captcha.php:34
+msgid "Comments form"
+msgstr "Komentarų forma"
+
+#: captcha.php:35
+msgid "Hide CAPTCHA for registered users"
+msgstr "Nerodyti CAPTCHA užsiregistravusiems vartotojams"
+
+#: captcha.php:40
+msgid "Plus (&#43;)"
+msgstr "Plius (&#43;)"
+
+#: captcha.php:40
+msgid "Plus"
+msgstr "Plius (&#43;)"
+
+#: captcha.php:41
+msgid "Minus (&minus;)"
+msgstr "Minus (&minus;)"
+
+#: captcha.php:41
+msgid "Minus"
+msgstr "Minus (&minus;)"
+
+#: captcha.php:42
+#, fuzzy
+msgid "Multiplication (&times;)"
+msgstr "Padauginti (&times;)"
+
+#: captcha.php:42
+#, fuzzy
+msgid "Multiply"
+msgstr "Padauginti (&times;)"
+
+#: captcha.php:47
+msgid "Numbers"
+msgstr "Skaičiai"
+
+#: captcha.php:48
+msgid "Words"
+msgstr "Žodžiai"
+
+#: captcha.php:123
+#, fuzzy
+msgid "Pro plugins"
+msgstr "BWS Plugins"
+
+#: captcha.php:126
+#: captcha.php:152
+msgid "Activated plugins"
+msgstr "Aktyvuoti plugin'ai"
+
+#: captcha.php:128
+#: captcha.php:136
+#: captcha.php:144
+#: captcha.php:154
+#: captcha.php:162
+#: captcha.php:170
+msgid "Read more"
+msgstr "Skaitykite daugiau"
+
+#: captcha.php:128
+#: captcha.php:154
+#: captcha.php:275
+#: captcha.php:284
+msgid "Settings"
+msgstr "Nustatymai"
+
+#: captcha.php:134
+#: captcha.php:160
+msgid "Installed plugins"
+msgstr "Instaliuoti plugin'ai"
+
+#: captcha.php:142
+#: captcha.php:168
+msgid "Recommended plugins"
+msgstr "Rekomenduojami plugin'ai"
+
+#: captcha.php:144
+msgid "Purchase"
+msgstr ""
+
+#: captcha.php:149
+#, fuzzy
+msgid "Free plugins"
+msgstr "Rekomenduojami plugin'ai"
+
+#: captcha.php:170
+msgid "Download"
+msgstr "Parsisiųsti"
+
+#: captcha.php:170
+#, php-format
+msgid "Install %s"
+msgstr "Instaliuoti %s"
+
+#: captcha.php:170
+msgid "Install now from wordpress.org"
+msgstr "Instaliuoti iš wordpress.org dabar"
+
+#: captcha.php:175
+msgid "If you have any questions, please contact us via"
+msgstr ""
+
+#: captcha.php:182
+#: captcha.php:347
+#, fuzzy
+msgid "Captcha Settings"
+msgstr "CAPTCHA nustatymai"
+
+#: captcha.php:182
+msgid "Captcha"
+msgstr "Saugos kodas"
+
+#: captcha.php:285
+msgid "FAQ"
+msgstr "D.U.K."
+
+#: captcha.php:286
+msgid "Support"
+msgstr "Pagalba"
+
+#: captcha.php:330
+#, fuzzy
+msgid "Please select one item in the block Arithmetic and Complexity for CAPTCHA"
+msgstr "Prašome pasirinkti bent vieną iš aritmetinių veiksmų ir jų sunkumo lygį saugos kodui nustatyti"
+
+#: captcha.php:334
+msgid "Options saved."
+msgstr "Nustatymai pakeisti sėkmingai."
+
+#: captcha.php:353
+#, fuzzy
+msgid "Enable CAPTCHA for:"
+msgstr "Aktyvuoti CAPTCHA:"
+
+#: captcha.php:367
+#: captcha.php:369
+#: captcha.php:372
+msgid "Contact form"
+msgstr "CONTACT FORM plugin'as"
+
+#: captcha.php:367
+#: captcha.php:369
+#: captcha.php:372
+#, fuzzy
+msgid "(powered by bestwebsoft.com)"
+msgstr "(sukurta bestwebsoft.com)"
+
+#: captcha.php:369
+msgid "Activate contact form"
+msgstr "Aktyvuoti Contact Form"
+
+#: captcha.php:372
+msgid "Download contact form"
+msgstr "Parsisiųsti Contact Form"
+
+#: captcha.php:374
+#, fuzzy
+msgid "If you would like to customize this plugin for a custom form, please contact us via"
+msgstr "Jeigu norite prisidėti prie šio plugin'o, prašome susisiekti su mumis adresu <a href=\"Mailto:plugin@bestwebsoft.com\">plugin@bestwebsoft.com</a> arba užpildykite konktaktinę formą mūsų internetiniame puslapyje."
+
+#: captcha.php:378
+#, fuzzy
+msgid "Title for CAPTCHA in the form"
+msgstr "CAPTCHA pavadinimas formoje"
+
+#: captcha.php:382
+msgid "Arithmetic actions for CAPTCHA"
+msgstr "CAPTCHA aritmetiniai veiksmai"
+
+#: captcha.php:391
+msgid "CAPTCHA complexity level"
+msgstr ""
+
+#: captcha.php:401
+msgid "Save Changes"
+msgstr "Išsaugoti pakeitimus"
+
+#: captcha.php:445
+#: captcha.php:451
+#: captcha.php:614
+#: captcha.php:621
+#: captcha.php:630
+#: captcha.php:637
+msgid "ERROR"
+msgstr "KLAIDA"
+
+#: captcha.php:445
+#: captcha.php:466
+#: captcha.php:582
+#: captcha.php:614
+#: captcha.php:630
+#: captcha.php:652
+msgid "Please fill the form."
+msgstr ""
+
+#: captcha.php:451
+#: captcha.php:477
+#: captcha.php:621
+#: captcha.php:637
+#, fuzzy
+msgid "Please enter a valid CAPTCHA value."
+msgstr "Prašome įvesti saugos kodą."
+
+#: captcha.php:588
+#: captcha.php:659
+#, fuzzy
+msgid "Error: You have entered an incorrect CAPTCHA value. Click the BACK button on your browser, and try again."
+msgstr "Klaida: Jūs neteisingai įvedėte saugos kodą! Prašome bandyti dar kartą."
+
+#: captcha.php:670
+#: captcha.php:898
+msgid "zero"
+msgstr "nulis"
+
+#: captcha.php:671
+#: captcha.php:899
+#: captcha.php:1094
+msgid "one"
+msgstr "vienas"
+
+#: captcha.php:672
+#: captcha.php:900
+msgid "two"
+msgstr "du "
+
+#: captcha.php:673
+#: captcha.php:901
+msgid "three"
+msgstr "trys"
+
+#: captcha.php:674
+#: captcha.php:902
+msgid "four"
+msgstr "keturi"
+
+#: captcha.php:675
+#: captcha.php:903
+msgid "five"
+msgstr "penki"
+
+#: captcha.php:676
+#: captcha.php:904
+#: captcha.php:1094
+msgid "six"
+msgstr "šeši"
+
+#: captcha.php:677
+#: captcha.php:905
+#: captcha.php:1082
+#: captcha.php:1088
+msgid "seven"
+msgstr "septyni"
+
+#: captcha.php:678
+#: captcha.php:906
+#: captcha.php:1085
+msgid "eight"
+msgstr "aštuoni"
+
+#: captcha.php:679
+#: captcha.php:907
+msgid "nine"
+msgstr "devyni"
+
+#: captcha.php:682
+#: captcha.php:910
+msgid "eleven"
+msgstr "vienuolika"
+
+#: captcha.php:683
+#: captcha.php:911
+msgid "twelve"
+msgstr "dvylika"
+
+#: captcha.php:684
+#: captcha.php:912
+msgid "thirteen"
+msgstr "trylika"
+
+#: captcha.php:685
+#: captcha.php:913
+msgid "fourteen"
+msgstr "keturiolika"
+
+#: captcha.php:686
+#: captcha.php:914
+msgid "fifteen"
+msgstr "penkiolika"
+
+#: captcha.php:687
+#: captcha.php:915
+msgid "sixteen"
+msgstr "šešiolika"
+
+#: captcha.php:688
+#: captcha.php:916
+msgid "seventeen"
+msgstr "septyniolika"
+
+#: captcha.php:689
+#: captcha.php:917
+msgid "eighteen"
+msgstr "aštuoniolika"
+
+#: captcha.php:690
+#: captcha.php:918
+msgid "nineteen"
+msgstr "devyniolika"
+
+#: captcha.php:693
+#: captcha.php:921
+msgid "ten"
+msgstr "dešimt"
+
+#: captcha.php:694
+#: captcha.php:922
+msgid "twenty"
+msgstr "dvidešimt"
+
+#: captcha.php:695
+#: captcha.php:923
+msgid "thirty"
+msgstr "trisdešimt"
+
+#: captcha.php:696
+#: captcha.php:924
+msgid "forty"
+msgstr "keturiasdešimt"
+
+#: captcha.php:697
+#: captcha.php:925
+msgid "fifty"
+msgstr "pekiasdešimt"
+
+#: captcha.php:698
+#: captcha.php:926
+msgid "sixty"
+msgstr "šešiasdešimt"
+
+#: captcha.php:699
+#: captcha.php:927
+msgid "seventy"
+msgstr "septyniasdešimt"
+
+#: captcha.php:700
+#: captcha.php:928
+msgid "eighty"
+msgstr "aštuoniasdešimt"
+
+#: captcha.php:701
+#: captcha.php:929
+msgid "ninety"
+msgstr "devyniasdešimt"
+
+#: captcha.php:788
+#: captcha.php:1016
+msgid "and"
+msgstr "ir"
+
+#: captcha.php:807
+#, fuzzy
+msgid "Encryption password is not set"
+msgstr "Dekodavimo slaptažodis nenustatytas"
+
+#: captcha.php:826
+#, fuzzy
+msgid "Decryption password is not set"
+msgstr "Dekodavimo slaptažodis nenustatytas"
+
+#, fuzzy
+#~ msgid ""
+#~ "If you have any questions, please contact us via plugin@bestwebsoft.com "
+#~ "or fill in the contact form on our website"
+#~ msgstr ""
+#~ "Jeigu turite klausimų, susisiekite su mumis adresu plugin@bestwebsoft.com "
+#~ "arba užpildykite konktaktų formą mūsų puslapyje"
+#~ msgid "Increase"
+#~ msgstr "Didėti"
+#~ msgid "Difficulty for CAPTCHA"
+#~ msgstr "CAPTCHA sunkumo lygis"
+#~ msgid "That CAPTCHA was incorrect."
+#~ msgstr "Saugos kodas įvestas neteisingai."
+#~ msgid "The password of encryption is not set"
+#~ msgstr "Užššifravimo slaptažodis nenustatytas"
+#~ msgid "null"
+#~ msgstr "null"
+#~ msgid "Install Now"
+#~ msgstr "Installér nu"
+
