@@ -10,3 +10,6 @@
 [submodule "wp-content/plugins/geouser"]
 	path = wp-content/plugins/geouser
 	url = git@github.com:WP-Brasil/geouser.git
+[submodule "wp-content/themes/mapa"]
+	path = wp-content/themes/mapa
+	url = git@github.com:WP-Brasil/mapa.git
