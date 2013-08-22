@@ -20,14 +20,17 @@ define( 'NONCE_SALT', 'nonce_salt' );
 
 $table_prefix  = 'wpbr_';
 
-define ('WPLANG', 'pt_BR');
+define('WPLANG', 'pt_BR');
+define('WP_DEBUG', true);
 
+#define('WP_ALLOW_MULTISITE', true);
 define('MULTISITE', true);
 define('SUBDOMAIN_INSTALL', true);
 define('DOMAIN_CURRENT_SITE', 'wpbrasildev');
 define('PATH_CURRENT_SITE', '/');
 define('SITE_ID_CURRENT_SITE', 1);
 define('BLOG_ID_CURRENT_SITE', 1);
+define('COOKIE_DOMAIN', '.wpbrasildev');
 
 if ( !defined('ABSPATH') )
 	define('ABSPATH', dirname(__FILE__) . '/');
