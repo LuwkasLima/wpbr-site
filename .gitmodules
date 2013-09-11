@@ -4,9 +4,6 @@
 [submodule "wp-content/themes/oportunidades"]
 	path = wp-content/themes/oportunidades
 	url = https://github.com/WP-Brasil/oportunidades.git
-[submodule "wp-content/languages"]
-	path = wp-content/languages
-	url = https://github.com/WP-Brasil/traducoes.git
 [submodule "wp-content/plugins/geouser"]
 	path = wp-content/plugins/geouser
 	url = https://github.com/WP-Brasil/geouser.git
