@@ -10,3 +10,6 @@
 [submodule "wp-content/themes/mapa"]
 	path = wp-content/themes/mapa
 	url = https://github.com/WP-Brasil/mapa.git
+[submodule "wp-content/themes/tema"]
+	path = wp-content/themes/tema
+	url = http://github.com/WP-Brasil/tema.git
