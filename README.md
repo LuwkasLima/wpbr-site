@@ -23,4 +23,4 @@ As discussões sobre implementações e ideias para este site são feitas no
 contribuições são bem-vindas. Dê um alô por lá!
 
 Bugs e tarefas específicas são reportadas e monitoradas pelos
-[tickets](/tickets) do Github.
+[tickets](https://github.com/WP-Brasil/WP-Brasil/issues) do GitHub.
