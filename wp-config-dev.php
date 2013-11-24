@@ -2,12 +2,12 @@
 
 define('DB_NAME', 'wpbrasil');
 define('DB_USER', 'root');
-define('DB_PASSWORD', '');
+define('DB_PASSWORD', 'root');
 define('DB_HOST', 'localhost');
 define('DB_CHARSET', 'utf8');
 define('DB_COLLATE', '');
 
-define('DOMAIN_CURRENT_SITE', 'wpbrasildev');
+#define('DOMAIN_CURRENT_SITE', 'wpbrasildev');
 
 define( 'AUTH_KEY', 'auth_key' );
 define( 'SECURE_AUTH_KEY', 'secure_uth_key' );
@@ -25,12 +25,11 @@ define('WP_DEBUG', true);
 
 #define('WP_ALLOW_MULTISITE', true);
 define('MULTISITE', true);
-define('SUBDOMAIN_INSTALL', true);
+define('SUBDOMAIN_INSTALL', false);
 define('DOMAIN_CURRENT_SITE', 'wpbrasildev');
 define('PATH_CURRENT_SITE', '/');
 define('SITE_ID_CURRENT_SITE', 1);
 define('BLOG_ID_CURRENT_SITE', 1);
-define('COOKIE_DOMAIN', '.wpbrasildev');
 
 if ( !defined('ABSPATH') )
 	define('ABSPATH', dirname(__FILE__) . '/');
