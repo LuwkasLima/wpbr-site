@@ -1,15 +1,15 @@
 [submodule "wp-content/themes/participe"]
 	path = wp-content/themes/participe
-	url = https://github.com/wpbrasil/participe.git
+	url = https://github.com/wpbrasil/comunidade-tema-participe.git
 [submodule "wp-content/themes/oportunidades"]
 	path = wp-content/themes/oportunidades
-	url = https://github.com/wpbrasil/oportunidades.git
+	url = https://github.com/wpbrasil/comunidade-tema-oportunidades.git
 [submodule "wp-content/plugins/geouser"]
 	path = wp-content/plugins/geouser
 	url = https://github.com/wpbrasil/geouser.git
 [submodule "wp-content/themes/mapa"]
 	path = wp-content/themes/mapa
-	url = https://github.com/wpbrasil/mapa.git
+	url = https://github.com/wpbrasil/comunidade-tema-mapa.git
 [submodule "wp-content/themes/tema"]
 	path = wp-content/themes/tema
-	url = http://github.com/wpbrasil/tema.git
+	url = http://github.com/wpbrasil/comunidade-tema-site.git
