@@ -95,6 +95,13 @@ class WP_Job_Manager_Settings {
 							'desc'       => __( 'How many <strong>days</strong> listings are live before expiring. Can be left blank to never expire.', 'job_manager' ),
 							'attributes' => array()
 						),
+						array(
+							'name' 		=> 'job_manager_submit_page_slug',
+							'std' 		=> '',
+							'label' 	=> __( 'Submit Page Slug', 'job_manager' ),
+							'desc'		=> __( 'Enter the slug of the page where you have placed the [submit_job_form] shortcode. This lets the plugin know where the form is located.', 'job_manager' ),
+							'type'      => 'input'
+						)
 					)
 				),
 			)
@@ -136,8 +143,8 @@ class WP_Job_Manager_Settings {
 
 			    <h2 class="nav-tab-wrapper">
 			    	<?php
-			    		foreach ( $this->settings as $section ) {
-			    			echo '<a href="#settings-' . sanitize_title( $section[0] ) . '" class="nav-tab">' . esc_html( $section[0] ) . '</a>';
+			    		foreach ( $this->settings as $key => $section ) {
+			    			echo '<a href="#settings-' . sanitize_title( $key ) . '" class="nav-tab">' . esc_html( $section[0] ) . '</a>';
 			    		}
 			    	?>
 			    </h2><br/>
@@ -148,9 +155,9 @@ class WP_Job_Manager_Settings {
 						echo '<div class="updated fade"><p>' . __( 'Settings successfully saved', 'job_manager' ) . '</p></div>';
 					}
 
-					foreach ( $this->settings as $section ) {
+					foreach ( $this->settings as $key => $section ) {
 
-						echo '<div id="settings-' . sanitize_title( $section[0] ) . '" class="settings_panel">';
+						echo '<div id="settings-' . sanitize_title( $key ) . '" class="settings_panel">';
 
 						echo '<table class="form-table">';
 
@@ -192,6 +199,14 @@ class WP_Job_Manager_Settings {
 										foreach( $option['options'] as $key => $name )
 											echo '<option value="' . esc_attr( $key ) . '" ' . selected( $value, $key, false ) . '>' . esc_html( $name ) . '</option>';
 									?></select><?php
+
+									if ( $option['desc'] )
+										echo ' <p class="description">' . $option['desc'] . '</p>';
+
+								break;
+								case "password" :
+
+									?><input id="setting-<?php echo $option['name']; ?>" class="regular-text" type="password" name="<?php echo $option['name']; ?>" value="<?php esc_attr_e( $value ); ?>" <?php echo implode( ' ', $attributes ); ?> <?php echo $placeholder; ?> /><?php
 
 									if ( $option['desc'] )
 										echo ' <p class="description">' . $option['desc'] . '</p>';

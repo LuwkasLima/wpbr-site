@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: captcha\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-03 15:42+0300\n"
-"PO-Revision-Date: 2013-06-03 15:42+0300\n"
+"POT-Creation-Date: 2013-11-22 13:56+0300\n"
+"PO-Revision-Date: 2013-11-22 13:56+0300\n"
 "Last-Translator: \n"
 "Language-Team: Radovan Georgijevic <radovan.georgijevic@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -16,398 +16,428 @@ msgstr ""
 "X-Generator: Poedit 1.5.4\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: captcha.php:31
-msgid "Login form"
-msgstr "Obrazac za prijavu"
-
 #: captcha.php:32
-#, fuzzy
-msgid "Registration form"
-msgstr "Obrazac za registraciju"
-
-#: captcha.php:32
-msgid "Register form"
-msgstr "Obrazac za registraciju"
-
-#: captcha.php:33
-#, fuzzy
-msgid "Reset Password form"
-msgstr "Obrazac za izgubljenu lozinku"
-
-#: captcha.php:33
-msgid "Lost password form"
-msgstr "Obrazac za izgubljenu lozinku"
-
-#: captcha.php:34
-msgid "Comments form"
-msgstr "Obrazac za komentare"
-
-#: captcha.php:35
-msgid "Hide CAPTCHA for registered users"
-msgstr "Sakrij CAPTCHA za registrovane korisnike"
-
-#: captcha.php:40
-msgid "Plus (&#43;)"
-msgstr "Plus (&#43;)"
-
-#: captcha.php:40
-msgid "Plus"
-msgstr "Plus (&#43;)"
-
-#: captcha.php:41
-msgid "Minus (&minus;)"
-msgstr "Minus (&minus;)"
-
-#: captcha.php:41
-msgid "Minus"
-msgstr "Minus"
-
-#: captcha.php:42
-#, fuzzy
-msgid "Multiplication (&times;)"
-msgstr "Pomnoži (&times;)"
-
-#: captcha.php:42
-#, fuzzy
-msgid "Multiply"
-msgstr "Pomnoži (&times;)"
-
-#: captcha.php:47
-msgid "Numbers"
-msgstr "Brojevi"
-
-#: captcha.php:48
-msgid "Words"
-msgstr "Reči"
-
-#: captcha.php:123
-#, fuzzy
-msgid "Pro plugins"
-msgstr "BWS Dodaci"
-
-#: captcha.php:126
-#: captcha.php:152
-msgid "Activated plugins"
-msgstr "Aktivni dodaci"
-
-#: captcha.php:128
-#: captcha.php:136
-#: captcha.php:144
-#: captcha.php:154
-#: captcha.php:162
-#: captcha.php:170
-msgid "Read more"
-msgstr "Čitaj više.."
-
-#: captcha.php:128
-#: captcha.php:154
-#: captcha.php:275
-#: captcha.php:284
-msgid "Settings"
-msgstr "Podešavanja"
-
-#: captcha.php:134
-#: captcha.php:160
-msgid "Installed plugins"
-msgstr "Instalirani dodaci"
-
-#: captcha.php:142
-#: captcha.php:168
-msgid "Recommended plugins"
-msgstr "Preporučeni dodaci"
-
-#: captcha.php:144
-msgid "Purchase"
-msgstr ""
-
-#: captcha.php:149
-#, fuzzy
-msgid "Free plugins"
-msgstr "Preporučeni dodaci"
-
-#: captcha.php:170
-msgid "Download"
-msgstr "Preuzmi"
-
-#: captcha.php:170
-#, php-format
-msgid "Install %s"
-msgstr "Instaliraj %s"
-
-#: captcha.php:170
-msgid "Install now from wordpress.org"
-msgstr "Instaliraj sa wordpress.org"
-
-#: captcha.php:175
-msgid "If you have any questions, please contact us via"
-msgstr ""
-
-#: captcha.php:182
-#: captcha.php:347
+#: captcha.php:255
 #, fuzzy
 msgid "Captcha Settings"
 msgstr "Captcha Opcije"
 
-#: captcha.php:182
+#: captcha.php:32
 msgid "Captcha"
 msgstr "Captcha"
 
-#: captcha.php:285
+#: captcha.php:49
+msgid "requires"
+msgstr ""
+
+#: captcha.php:49
+msgid "or higher, that is why it has been deactivated! Please upgrade WordPress and try again."
+msgstr ""
+
+#: captcha.php:49
+msgid "Back to the WordPress"
+msgstr ""
+
+#: captcha.php:49
+#, fuzzy
+msgid "Plugins page"
+msgstr "BWS Dodaci"
+
+#: captcha.php:57
+msgid "Login form"
+msgstr "Obrazac za prijavu"
+
+#: captcha.php:58
+#: captcha.php:291
+#, fuzzy
+msgid "Registration form"
+msgstr "Obrazac za registraciju"
+
+#: captcha.php:58
+msgid "Register form"
+msgstr "Obrazac za registraciju"
+
+#: captcha.php:59
+#, fuzzy
+msgid "Reset Password form"
+msgstr "Obrazac za izgubljenu lozinku"
+
+#: captcha.php:59
+msgid "Lost password form"
+msgstr "Obrazac za izgubljenu lozinku"
+
+#: captcha.php:60
+#: captcha.php:292
+msgid "Comments form"
+msgstr "Obrazac za komentare"
+
+#: captcha.php:61
+msgid "Hide CAPTCHA for registered users"
+msgstr "Sakrij CAPTCHA za registrovane korisnike"
+
+#: captcha.php:66
+msgid "Plus (&#43;)"
+msgstr "Plus (&#43;)"
+
+#: captcha.php:66
+msgid "Plus"
+msgstr "Plus (&#43;)"
+
+#: captcha.php:67
+msgid "Minus (&minus;)"
+msgstr "Minus (&minus;)"
+
+#: captcha.php:67
+msgid "Minus"
+msgstr "Minus"
+
+#: captcha.php:68
+#, fuzzy
+msgid "Multiplication (&times;)"
+msgstr "Pomnoži (&times;)"
+
+#: captcha.php:68
+#, fuzzy
+msgid "Multiply"
+msgstr "Pomnoži (&times;)"
+
+#: captcha.php:73
+msgid "Numbers"
+msgstr "Brojevi"
+
+#: captcha.php:74
+msgid "Words"
+msgstr "Reči"
+
+#: captcha.php:188
+#: captcha.php:200
+msgid "Settings"
+msgstr "Podešavanja"
+
+#: captcha.php:201
 msgid "FAQ"
 msgstr "FAQ"
 
-#: captcha.php:286
+#: captcha.php:202
 msgid "Support"
 msgstr "Podrška"
 
-#: captcha.php:330
+#: captcha.php:244
 #, fuzzy
 msgid "Please select one item in the block Arithmetic and Complexity for CAPTCHA"
 msgstr "Izaberite jednu tačku u blokovima Aritmetičkih akcija i Težine za CAPTCHA"
 
-#: captcha.php:334
-msgid "Options saved."
+#: captcha.php:248
+#, fuzzy
+msgid "Settings saved."
 msgstr "Opcije sačuvane"
 
-#: captcha.php:353
+#: captcha.php:261
+#: captcha.php:288
 #, fuzzy
 msgid "Enable CAPTCHA for:"
 msgstr "Omogući CAPTCHA na:"
 
-#: captcha.php:367
-#: captcha.php:369
-#: captcha.php:372
+#: captcha.php:273
+#: captcha.php:275
+#: captcha.php:278
 msgid "Contact form"
 msgstr "Kontakt forma"
 
-#: captcha.php:367
-#: captcha.php:369
-#: captcha.php:372
-#, fuzzy
-msgid "(powered by bestwebsoft.com)"
-msgstr "(razvijeno od strane bestwebsoft.com)"
+#: captcha.php:273
+#: captcha.php:275
+#: captcha.php:278
+msgid "powered by"
+msgstr ""
 
-#: captcha.php:369
+#: captcha.php:275
 msgid "Activate contact form"
 msgstr "Aktiviraj kontakt formu"
 
-#: captcha.php:372
+#: captcha.php:278
 msgid "Download contact form"
 msgstr "Preuzmi kontakt formu"
 
-#: captcha.php:374
+#: captcha.php:280
 #, fuzzy
-msgid "If you would like to customize this plugin for a custom form, please contact us via"
+msgid "If you would like to customize this plugin for a custom form, please see"
 msgstr "Ukoliko želite ovaj dodatak da prilagodite svojim posebnim porebama, kontaktirajte nas putem maila <a href=\"Mailto:plugin@bestwebsoft.com\">plugin@bestwebsoft.com</a> ili popunite kontakt formu na našem sajtu"
 
-#: captcha.php:378
+#: captcha.php:293
+msgid "\"Create a Group\" form"
+msgstr ""
+
+#: captcha.php:299
+#, fuzzy
+msgid "Enable CAPTCHA:"
+msgstr "Omogući CAPTCHA na:"
+
+#: captcha.php:307
+msgid "This functionality is available in the Pro version of the plugin. For more details, please follow the link"
+msgstr ""
+
+#: captcha.php:314
 #, fuzzy
 msgid "Title for CAPTCHA in the form"
 msgstr "Oznaka za CAPTCHA u obrascu"
 
-#: captcha.php:382
+#: captcha.php:318
+msgid "Required symbol"
+msgstr ""
+
+#: captcha.php:324
 msgid "Arithmetic actions for CAPTCHA"
 msgstr "Aritmetičke operacije za CAPTCHA"
 
-#: captcha.php:391
+#: captcha.php:338
 msgid "CAPTCHA complexity level"
 msgstr ""
 
-#: captcha.php:401
+#: captcha.php:354
 msgid "Save Changes"
 msgstr "Sačuvaj promene"
 
-#: captcha.php:445
-#: captcha.php:451
+#: captcha.php:400
+#: captcha.php:407
+#: captcha.php:584
+#: captcha.php:592
+#: captcha.php:606
 #: captcha.php:614
-#: captcha.php:621
-#: captcha.php:630
-#: captcha.php:637
 msgid "ERROR"
 msgstr "GREŠKA"
 
-#: captcha.php:445
-#: captcha.php:466
-#: captcha.php:582
-#: captcha.php:614
-#: captcha.php:630
-#: captcha.php:652
+#: captcha.php:400
+#: captcha.php:426
+#: captcha.php:547
+#: captcha.php:584
+#: captcha.php:606
+#: captcha.php:634
 msgid "Please fill the form."
 msgstr ""
 
-#: captcha.php:451
-#: captcha.php:477
-#: captcha.php:621
-#: captcha.php:637
+#: captcha.php:407
+#: captcha.php:437
+#: captcha.php:592
+#: captcha.php:614
 #, fuzzy
 msgid "Please enter a valid CAPTCHA value."
 msgstr "Molimo vas da popunite CAPTCHA"
 
-#: captcha.php:588
-#: captcha.php:659
+#: captcha.php:553
+#: captcha.php:642
 #, fuzzy
 msgid "Error: You have entered an incorrect CAPTCHA value. Click the BACK button on your browser, and try again."
 msgstr "Greška: Uneli ste pogrešnu CAPTCHA frazu. Vratite se nazad i pokušajte ponovo"
 
-#: captcha.php:670
-#: captcha.php:898
+#: captcha.php:660
+#: captcha.php:958
 msgid "zero"
 msgstr "nula"
 
-#: captcha.php:671
-#: captcha.php:899
-#: captcha.php:1094
+#: captcha.php:661
+#: captcha.php:959
+#: captcha.php:1174
 msgid "one"
 msgstr "jedan"
 
-#: captcha.php:672
-#: captcha.php:900
+#: captcha.php:662
+#: captcha.php:960
 msgid "two"
 msgstr "dva"
 
-#: captcha.php:673
-#: captcha.php:901
+#: captcha.php:663
+#: captcha.php:961
 msgid "three"
 msgstr "tri"
 
-#: captcha.php:674
-#: captcha.php:902
+#: captcha.php:664
+#: captcha.php:962
 msgid "four"
 msgstr "četiri"
 
-#: captcha.php:675
-#: captcha.php:903
+#: captcha.php:665
+#: captcha.php:963
 msgid "five"
 msgstr "pet"
 
-#: captcha.php:676
-#: captcha.php:904
-#: captcha.php:1094
+#: captcha.php:666
+#: captcha.php:964
+#: captcha.php:1174
 msgid "six"
 msgstr "šest"
 
-#: captcha.php:677
-#: captcha.php:905
-#: captcha.php:1082
-#: captcha.php:1088
+#: captcha.php:667
+#: captcha.php:965
+#: captcha.php:1162
+#: captcha.php:1168
 msgid "seven"
 msgstr "sedam"
 
-#: captcha.php:678
-#: captcha.php:906
-#: captcha.php:1085
+#: captcha.php:668
+#: captcha.php:966
+#: captcha.php:1165
 msgid "eight"
 msgstr "osam"
 
-#: captcha.php:679
-#: captcha.php:907
+#: captcha.php:669
+#: captcha.php:967
 msgid "nine"
 msgstr "devet"
 
-#: captcha.php:682
-#: captcha.php:910
+#: captcha.php:672
+#: captcha.php:970
 msgid "eleven"
 msgstr "jedanaest"
 
-#: captcha.php:683
-#: captcha.php:911
+#: captcha.php:673
+#: captcha.php:971
 msgid "twelve"
 msgstr "dvanaest"
 
-#: captcha.php:684
-#: captcha.php:912
+#: captcha.php:674
+#: captcha.php:972
 msgid "thirteen"
 msgstr "trinaest"
 
-#: captcha.php:685
-#: captcha.php:913
+#: captcha.php:675
+#: captcha.php:973
 msgid "fourteen"
 msgstr "četrnaest"
 
-#: captcha.php:686
-#: captcha.php:914
+#: captcha.php:676
+#: captcha.php:974
 msgid "fifteen"
 msgstr "petnaest"
 
-#: captcha.php:687
-#: captcha.php:915
+#: captcha.php:677
+#: captcha.php:975
 msgid "sixteen"
 msgstr "šesnaest"
 
-#: captcha.php:688
-#: captcha.php:916
+#: captcha.php:678
+#: captcha.php:976
 msgid "seventeen"
 msgstr "sedamnaest"
 
-#: captcha.php:689
-#: captcha.php:917
+#: captcha.php:679
+#: captcha.php:977
 msgid "eighteen"
 msgstr "osamnaest"
 
-#: captcha.php:690
-#: captcha.php:918
+#: captcha.php:680
+#: captcha.php:978
 msgid "nineteen"
 msgstr "devetnaest"
 
-#: captcha.php:693
-#: captcha.php:921
+#: captcha.php:683
+#: captcha.php:981
 msgid "ten"
 msgstr "deset"
 
-#: captcha.php:694
-#: captcha.php:922
+#: captcha.php:684
+#: captcha.php:982
 msgid "twenty"
 msgstr "dvadeset"
 
-#: captcha.php:695
-#: captcha.php:923
+#: captcha.php:685
+#: captcha.php:983
 msgid "thirty"
 msgstr "trideset"
 
-#: captcha.php:696
-#: captcha.php:924
+#: captcha.php:686
+#: captcha.php:984
 msgid "forty"
 msgstr "četrdeset"
 
-#: captcha.php:697
-#: captcha.php:925
+#: captcha.php:687
+#: captcha.php:985
 msgid "fifty"
 msgstr "pedeset"
 
-#: captcha.php:698
-#: captcha.php:926
+#: captcha.php:688
+#: captcha.php:986
 msgid "sixty"
 msgstr "šeszdeset"
 
-#: captcha.php:699
-#: captcha.php:927
+#: captcha.php:689
+#: captcha.php:987
 msgid "seventy"
 msgstr "sedamdeset"
 
-#: captcha.php:700
-#: captcha.php:928
+#: captcha.php:690
+#: captcha.php:988
 msgid "eighty"
 msgstr "osamdeset"
 
-#: captcha.php:701
-#: captcha.php:929
+#: captcha.php:691
+#: captcha.php:989
 msgid "ninety"
 msgstr "devedeset"
 
-#: captcha.php:788
-#: captcha.php:1016
+#: captcha.php:778
+#: captcha.php:1076
 msgid "and"
 msgstr "i"
 
-#: captcha.php:807
+#: captcha.php:853
 #, fuzzy
 msgid "Encryption password is not set"
 msgstr "Lozinka za dešifrovanje nije još podešena"
 
-#: captcha.php:826
+#: captcha.php:873
 #, fuzzy
 msgid "Decryption password is not set"
 msgstr "Lozinka za dešifrovanje nije još podešena"
+
+#: captcha.php:1235
+msgid "It's time to upgrade your <strong>Captcha plugin</strong> to <strong>PRO</strong> version"
+msgstr ""
+
+#: captcha.php:1236
+msgid "Extend standard plugin functionality with new great options"
+msgstr ""
+
+#, fuzzy
+#~ msgid "to"
+#~ msgstr "dva"
+
+#, fuzzy
+#~ msgid "Please enter a valid email address."
+#~ msgstr "Molimo vas da popunite CAPTCHA"
+#~ msgid "Activated plugins"
+#~ msgstr "Aktivni dodaci"
+#~ msgid "Read more"
+#~ msgstr "Čitaj više.."
+#~ msgid "Installed plugins"
+#~ msgstr "Instalirani dodaci"
+#~ msgid "Recommended plugins"
+#~ msgstr "Preporučeni dodaci"
+
+#, fuzzy
+#~ msgid "Free plugins"
+#~ msgstr "Preporučeni dodaci"
+#~ msgid "Download"
+#~ msgstr "Preuzmi"
+#~ msgid "Install %s"
+#~ msgstr "Instaliraj %s"
+#~ msgid "Install now from wordpress.org"
+#~ msgstr "Instaliraj sa wordpress.org"
+
+#, fuzzy
+#~ msgid "Active Plugins"
+#~ msgstr "Aktivni dodaci"
+
+#, fuzzy
+#~ msgid "Inactive Plugins"
+#~ msgstr "Aktivni dodaci"
+
+#, fuzzy
+#~ msgid "Send to support"
+#~ msgstr "Podrška"
+
+#, fuzzy
+#~ msgid "(powered by bestwebsoft.com)"
+#~ msgstr "(razvijeno od strane bestwebsoft.com)"
 
 #, fuzzy
 #~ msgid ""

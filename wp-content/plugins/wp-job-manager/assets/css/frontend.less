@@ -115,15 +115,14 @@
 	}
 }
 
-
-
 .job-manager-form {
 	fieldset {
 		margin: 0 0 1em 0;
 		padding: 0 0 1em 0;
 		line-height: 2em;
+		border: 0;
 		border-bottom: 1px solid #eee;
-		overflow: hidden;
+		.clearfix;
 		label {
 			display: block;
 			margin: 0;
@@ -187,10 +186,13 @@
 }
 div.job_listings {
 	margin-bottom: 1em;
+	ul.job_listings {
+		margin: 0;
+	}
 }
 ul.job_listings {
 	padding: 0;
-	margin: 0 !important;
+	margin: 0;
 	border-top: 1px solid #eee;
 
 	&.loading {
@@ -283,6 +285,15 @@ ul.job_listings {
 				}
 				.job-type {
 					font-weight: bold;
+				}
+			}
+		}
+		&.job_position_featured {
+			a {
+				background: #fefee5;
+
+				&:hover, &:focus {
+					background-color: #fefed8;
 				}
 			}
 		}
@@ -393,6 +404,7 @@ ul.job_listings {
 		margin: 0 0 1.5em;
 		overflow: hidden;
 		zoom: 1;
+		clear: both;
 		li {
 			margin: 0 1em 0 0;
 			padding: .5em;
@@ -568,11 +580,9 @@ ul.job_listings {
 		background: #f9f9f9;
 		border-top: 1px solid #e5e5e5;
 
-		.reset, .rss_link {
+		a {
 			float: right;
-		}
-		.rss_link {
-			padding-right: 10px;
+			padding-left: 10px;
 		}
 	}
 }
@@ -598,12 +608,16 @@ ul.job_listings {
 }
 .job_listing_preview_title, .entry-content .job_listing_preview_title {
 	padding: .5em 1em;
-	margin-bottom: 0;
 	vertical-align: middle;
 	position: relative;
 	background: #eee;
+	h2 {
+		margin: 0;
+		clear: none;
+	}
 	.button {
 		float: right;
+		margin-left: .25em;
 	}
 }
 .job_summary_shortcode {
@@ -736,6 +750,42 @@ ul.job_listings {
 		}
 		.filled, .expires {
 			text-align: center;
+		}
+	}
+}
+
+nav.job-manager-pagination, #content nav.job-manager-pagination {
+	text-align: center;
+	ul {
+		display: inline-block;
+		white-space: nowrap;
+		padding:0;
+		clear: both;
+		border: 1px solid #eee;
+		border-right: 0;
+		margin: 1px;
+		li {
+			border-right: 1px solid #eee;
+			padding: 0;
+			margin: 0;
+			float: left;
+			display: inline;
+			overflow: hidden;
+			a, span {
+				margin: 0;
+				text-decoration: none;
+				padding: 0;
+				line-height: 1em;
+				font-size: 1em;
+				font-weight: normal;
+				padding: .5em;
+				min-width: 1em;
+				display: block;
+			}
+			span.current, a:hover, a:focus {
+				background: #eee;
+				color: darken( #eee, 40 );
+			}
 		}
 	}
 }

@@ -3,8 +3,8 @@ Contributors: mikejolley
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=mike.jolley@me.com&currency_code=&amount=&return=&item_name=Buy+me+a+coffee+for+A+New+Job+Board+Plugin+for+WordPress
 Tags: job listing, job board, job, jobs, company
 Requires at least: 3.5
-Tested up to: 3.6
-Stable tag: 1.0.5
+Tested up to: 3.7
+Stable tag: 1.5.0
 
 Manage job listings from the WordPress admin panel, and allow users to post jobs directly to your site.
 
@@ -71,6 +71,66 @@ The manual installation method involves downloading the plugin and uploading it 
 6. Job listings in admin.
 
 == Changelog ==
+
+= 1.5.0 =
+* Ability to edit job expiration date manually via admin
+* Settings API: Password field
+* Frontend Forms: Password field
+* Correctly turn off expiration when 'days' is not set
+* Greek should be el_GR
+* Settings: Use key for tabs - fixes issues with locales
+* Show pending count in admin menu
+* Added job_types argument to jobs shortcode to show jobs of a certain type only
+* Hierarchical dropdown for categories on filter form
+* job_manager_job_submitted hook in submission form
+
+= 1.4.0 =
+* Added pagination to the job dashboard to avoid memory issues
+* Schema.org markup for job listings
+* Greek translation by Ioannis Arsenis
+
+= 1.3.1 =
+* Remove line breaks from markup to prevent theme issues
+
+= 1.3.0 =
+* When using the [jobs] shortcode without filters, if jobs > per-page show the 'load more' link
+* Clearfix for meta div
+* Hooked up $size option for company logos
+* submit_job_form_save_job_data filter
+* Italian translation
+* Brazillian Portuguese translation
+* Respect other plugin columns in admin
+* Re-arranged admin columns to show less non-useful data
+
+= 1.2.0 =
+* Support for featured job listings
+* Support for meta job duration
+* set_expirey when publishing jobs from admin manually
+* Update handler
+
+= 1.1.3 =
+* Corrected form field label
+* Added french translation by Remi Corson
+
+= 1.1.2 =
+* job_manager_get_dashboard_jobs_args filter
+* Better handling of submit job steps.
+* Option to store the slug of the submit job page - used by addons.
+* Use :input in JS to support multiple input types if customised.
+
+= 1.1.1 =
+* Improved accuracy of job search
+* Fixed category filter dropdown in admin
+
+= 1.1.0 =
+* Tweaked css clearfixes
+* Use built in antispambot for encoding email.
+* job_manager_job_filters_showing_jobs_links filter
+* IE8 Apply filters JS fix
+* Fix spanish locale
+* Fixed strict standards errors
+* Improve 2013 Styles
+* Addons page. Disabled usings add_filter( 'job_manager_show_addons_page', '__return_false' );
 
 = 1.0.5 =
 * Added function to get listings by certain criteria.

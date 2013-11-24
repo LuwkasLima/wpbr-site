@@ -26,7 +26,7 @@ class WP_Job_Manager_Ajax {
 		$search_location   = sanitize_text_field( stripslashes( $_POST['search_location'] ) );
 		$search_keywords   = sanitize_text_field( stripslashes( $_POST['search_keywords'] ) );
 		$search_categories = isset( $_POST['search_categories'] ) ? $_POST['search_categories'] : '';
-		$filter_job_types  = isset( $_POST['filter_job_type'] ) ? array_filter( array_map( 'sanitize_title', (array) $_POST['filter_job_type'] ) ) : array();
+		$filter_job_types  = isset( $_POST['filter_job_type'] ) ? array_filter( array_map( 'sanitize_title', (array) $_POST['filter_job_type'] ) ) : null;
 
 		if ( is_array( $search_categories ) ) {
 			$search_categories = array_map( 'sanitize_text_field', array_map( 'stripslashes', $search_categories ) );
@@ -40,7 +40,7 @@ class WP_Job_Manager_Ajax {
 			'search_location'   => $search_location,
 			'search_keywords'   => $search_keywords,
 			'search_categories' => $search_categories,
-			'job_types'         => $filter_job_types + array( 0 ),
+			'job_types'         => is_null( $filter_job_types ) ? '' : $filter_job_types + array( 0 ),
 			'orderby'           => sanitize_text_field( $_POST['orderby'] ),
 			'order'             => sanitize_text_field( $_POST['order'] ),
 			'offset'            => ( absint( $_POST['page'] ) - 1 ) * absint( $_POST['per_page'] ),
@@ -116,12 +116,12 @@ class WP_Job_Manager_Ajax {
 		}
 
 		// Generate RSS link
-		$result['rss'] = get_job_listing_rss_link( apply_filters( 'job_manager_get_listings_custom_filter_rss_args', array(
-			'type'           => implode( ',', $filter_job_types ),
-			'location'       => $search_location,
-			'job_categories' => implode( ',', $search_categories ),
-			's'              => $search_keywords,
-		) ) );
+		$result['showing_links'] = job_manager_get_filtered_links( array(
+			'filter_job_types'  => $filter_job_types,
+			'search_location'   => $search_location,
+			'search_categories' => $search_categories,
+			'search_keywords'   => $search_keywords
+		) );
 
 		$result['max_num_pages'] = $jobs->max_num_pages;
 

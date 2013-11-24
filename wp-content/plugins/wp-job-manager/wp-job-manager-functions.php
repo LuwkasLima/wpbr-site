@@ -39,12 +39,15 @@ function get_job_listings( $args = array() ) {
 			'terms'    => $args['job_types']
 		);
 
-	if ( ! empty( $args['search_categories'] ) )
+	if ( ! empty( $args['search_categories'] ) ) {
+		$field = is_numeric( $args['search_categories'][0] ) ? 'term_id' : 'slug';
+		
 		$query_args['tax_query'][] = array(
 			'taxonomy' => 'job_listing_category',
-			'field'    => 'slug',
+			'field'    => $field,
 			'terms'    => $args['search_categories']
 		);
+	}
 
 	if ( get_option( 'job_manager_hide_filled_positions' ) == 1 )
 		$query_args['meta_query'][] = array(
@@ -67,11 +70,13 @@ function get_job_listings( $args = array() ) {
 		    WHERE meta_value LIKE '%%%s%%'
 		", $args['search_keywords'] ) );
 
-		$post_ids = $post_ids + $wpdb->get_col( $wpdb->prepare( "
-		    SELECT DISTINCT ID FROM {$wpdb->posts}
+		$post_ids = array_merge( $post_ids, $wpdb->get_col( $wpdb->prepare( "
+		    SELECT ID FROM {$wpdb->posts}
 		    WHERE post_title LIKE '%%%s%%'
 		    OR post_content LIKE '%%%s%%'
-		", $args['search_keywords'], $args['search_keywords'] ) );
+		    AND post_type = 'job_listing'
+		    AND post_status = 'publish'
+		", $args['search_keywords'], $args['search_keywords'] ) ) );
 
 		$query_args['post__in'] = $post_ids + array( 0 );
 	}
@@ -84,7 +89,60 @@ function get_job_listings( $args = array() ) {
 	if ( empty( $query_args['tax_query'] ) )
 		unset( $query_args['tax_query'] );
 
-	return new WP_Query( $query_args );
+	if ( $args['orderby'] == 'featured' ) {
+		$query_args['orderby'] = 'meta_key';
+		$query_args['meta_key'] = '_featured';
+		add_filter( 'posts_clauses', 'order_featured_job_listing' );
+	}
+
+	// Filter args
+	$query_args = apply_filters( 'get_job_listings_query_args', $query_args );
+
+	do_action( 'before_get_job_listings', $query_args );
+
+	$result = new WP_Query( $query_args );
+
+	do_action( 'after_get_job_listings', $query_args );
+
+	remove_filter( 'posts_clauses', 'order_featured_job_listing' );
+
+	return $result;
+}
+endif;
+
+if ( ! function_exists( 'order_featured_job_listing' ) ) :
+	/**
+	 * WP Core doens't let us change the sort direction for invidual orderby params - http://core.trac.wordpress.org/ticket/17065
+	 *
+	 * @access public
+	 * @param array $args
+	 * @return array
+	 */
+	function order_featured_job_listing( $args ) {
+		global $wpdb;
+
+		$args['orderby'] = "$wpdb->postmeta.meta_value+0 DESC, $wpdb->posts.post_date DESC";
+
+		return $args;
+	}
+endif;
+
+if ( ! function_exists( 'get_featured_job_ids' ) ) :
+/**
+ * Gets the ids of featured jobs.
+ *
+ * @access public
+ * @return array
+ */
+function get_featured_job_ids() {
+	return get_posts( array(
+		'posts_per_page' => -1,
+		'post_type'      => 'job_listing',
+		'post_status'    => 'publish',
+		'meta_key'       => '_featured',
+		'meta_value'     => '1',
+		'fields'         => 'ids'
+	) );
 }
 endif;
 
@@ -93,7 +151,7 @@ if ( ! function_exists( 'get_job_listing_types' ) ) :
  * Outputs a form to submit a new job to the site from the frontend.
  *
  * @access public
- * @return void
+ * @return array
  */
 function get_job_listing_types() {
 	return get_terms( "job_listing_type", array(
@@ -123,38 +181,35 @@ function get_job_listing_categories() {
 }
 endif;
 
-if ( ! function_exists( 'job_manager_encode_email' ) ) :
+if ( ! function_exists( 'job_manager_get_filtered_links' ) ) :
 /**
- * Munge an email address
- *
- * @param  string $email
- * @return string
+ * Shows links after filtering jobs
  */
-function wp_job_manager_encode_email( $email ) {
-    $encmail = "";
-    for ( $i = 0; $i < strlen( $email ); $i++ ) {
-    	$char   = substr( $email, $i, 1 );
+function job_manager_get_filtered_links( $args = array() ) {
 
-    	if ( $char == '@' ) {
-    		$encmail .= ' [at] ';
-    	} elseif ( $char == '.' ) {
-    		$encmail .= ' [dot] ';
-    	} else {
-	        $encMod = rand( 0, 2 );
-	        switch ( $encMod ) {
-	        	case 0: // None
-	           		$encmail .= $char;
-	            break;
-	       		case 1: // Decimal
-	            	$encmail .= "&#" . ord( $char ) . ';';
-	            break;
-	        	case 2: // Hexadecimal
-	            	$encmail .= "&#x" . dechex( ord( $char ) ) . ';';
-	            break;
-	        }
-   		}
-    }
-	return $encmail;
+	$links = apply_filters( 'job_manager_job_filters_showing_jobs_links', array(
+		'reset' => array(
+			'name' => __( 'Reset', 'job_manager' ),
+			'url'  => '#'
+		),
+		'rss_link' => array(
+			'name' => __( 'RSS', 'job_manager' ),
+			'url'  => get_job_listing_rss_link( apply_filters( 'job_manager_get_listings_custom_filter_rss_args', array(
+				'type'           => implode( ',', $args['filter_job_types'] ),
+				'location'       => $args['search_location'],
+				'job_categories' => implode( ',', $args['search_categories'] ),
+				's'              => $args['search_keywords'],
+			) ) )
+		)
+	), $args );
+
+	$return = '';
+
+	foreach ( $links as $key => $link ) {
+		$return .= '<a href="' . esc_url( $link['url'] ) . '" class="' . esc_attr( $key ) . '">' . $link['name'] . '</a>';
+	}
+
+	return $return;
 }
 endif;
 

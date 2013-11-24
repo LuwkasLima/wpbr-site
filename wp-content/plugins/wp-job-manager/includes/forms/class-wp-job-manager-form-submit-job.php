@@ -9,17 +9,13 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	protected static $job_id;
 	protected static $preview_job;
 	protected static $steps;
-	protected static $step;
+	protected static $step = 0;
 
 	/**
 	 * Init form
 	 */
 	public static function init() {
 		add_action( 'wp', array( __CLASS__, 'process' ) );
-
-		// Get step/job
-		self::$step   = ! empty( $_REQUEST['step'] ) ? max( absint( $_REQUEST['step'] ), 0 ) : 0;
-		self::$job_id = ! empty( $_REQUEST['job_id'] ) ? absint( $_REQUEST[ 'job_id' ] ) : 0;
 
 		self::$steps  = (array) apply_filters( 'submit_job_steps', array(
 			'submit' => array(
@@ -41,7 +37,13 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			)
 		) );
 
-		usort( self::$steps, array( __CLASS__, 'sort_by_priority' ) );
+		uasort( self::$steps, array( __CLASS__, 'sort_by_priority' ) );
+
+		// Get step/job
+		if ( ! empty( $_REQUEST['step'] ) ) {
+			self::$step = is_numeric( $_REQUEST['step'] ) ? max( absint( $_REQUEST['step'] ), 0 ) : array_search( $_REQUEST['step'], array_keys( self::$steps ) );
+		}
+		self::$job_id = ! empty( $_REQUEST['job_id'] ) ? absint( $_REQUEST[ 'job_id' ] ) : 0;
 
 		// Validate job ID if set
 		if ( self::$job_id && ! in_array( get_post_status( self::$job_id ), apply_filters( 'job_manager_valid_submit_job_statuses', array( 'preview' ) ) ) ) {
@@ -51,23 +53,30 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	}
 
 	/**
+	 * Get step from outside of the class
+	 */
+	public static function get_step() {
+		return self::$step;
+	}
+
+	/**
 	 * Increase step from outside of the class
 	 */
-	public function next_step() {
+	public static function next_step() {
 		self::$step ++;
 	}
 
 	/**
 	 * Decrease step from outside of the class
 	 */
-	public function previous_step() {
+	public static function previous_step() {
 		self::$step --;
 	}
 
 	/**
 	 * Sort array by priority value
 	 */
-	private function sort_by_priority( $a, $b ) {
+	private static function sort_by_priority( $a, $b ) {
 		return $a['priority'] - $b['priority'];
 	}
 
@@ -186,7 +195,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 *
 	 * @return array of data
 	 */
-	protected function get_posted_fields() {
+	protected static function get_posted_fields() {
 		self::init_fields();
 
 		$values = array();
@@ -222,7 +231,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 *
 	 * @return bool on success, WP_ERROR on failure
 	 */
-	protected function validate_fields( $values ) {
+	protected static function validate_fields( $values ) {
 		foreach ( self::$fields as $group_key => $fields ) {
 			foreach ( $fields as $key => $field ) {
 				if ( $field['required'] && empty( $values[ $group_key ][ $key ] ) )
@@ -239,7 +248,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * @access private
 	 * @return void
 	 */
-	private function job_types() {
+	private static function job_types() {
 		$options = array();
 		$terms   = get_job_listing_types();
 		foreach ( $terms as $term )
@@ -253,7 +262,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * @access private
 	 * @return void
 	 */
-	private function job_categories() {
+	private static function job_categories() {
 		$options = array();
 		$terms   = get_job_listing_categories();
 		foreach ( $terms as $term )
@@ -391,14 +400,14 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * @param  string $post_content
 	 * @param  string $status
 	 */
-	protected function save_job( $post_title, $post_content, $status = 'preview' ) {
-		$job_data = array(
+	protected static function save_job( $post_title, $post_content, $status = 'preview' ) {
+		$job_data = apply_filters( 'submit_job_form_save_job_data', array(
 			'post_title'     => $post_title,
 			'post_content'   => $post_content,
 			'post_status'    => $status,
 			'post_type'      => 'job_listing',
 			'comment_status' => 'closed'
-		);
+		) );
 
 		if ( self::$job_id ) {
 			$job_data['ID'] = self::$job_id;
@@ -413,7 +422,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 *
 	 * @param  array $values
 	 */
-	protected function update_job_data( $values ) {
+	protected static function update_job_data( $values ) {
 
 		wp_set_object_terms( self::$job_id, array( $values['job']['job_type'] ), 'job_listing_type', false );
 
@@ -429,6 +438,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		update_post_meta( self::$job_id, '_company_twitter', $values['company']['company_twitter'] );
 		update_post_meta( self::$job_id, '_company_logo', $values['company']['company_logo'] );
 		update_post_meta( self::$job_id, '_filled', 0 );
+		update_post_meta( self::$job_id, '_featured', 0 );
 
 		// And user meta to save time in future
 		if ( is_user_logged_in() ) {
@@ -455,14 +465,16 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 			?>
 			<form method="post" id="job_preview">
-				<h2 class="job_listing_preview_title">
+				<div class="job_listing_preview_title">
 					<input type="submit" name="continue" id="job_preview_submit_button" class="button" value="<?php echo apply_filters( 'submit_job_step_preview_submit_text', __( 'Submit Listing &rarr;', 'job_manager' ) ); ?>" />
 					<input type="submit" name="edit_job" class="button" value="<?php _e( '&larr; Edit listing', 'job_manager' ); ?>" />
 					<input type="hidden" name="job_id" value="<?php echo esc_attr( self::$job_id ); ?>" />
 					<input type="hidden" name="step" value="<?php echo esc_attr( self::$step ); ?>" />
 					<input type="hidden" name="job_manager_form" value="<?php echo self::$form_name; ?>" />
-					<?php _e( 'Preview', 'job_manager' ); ?>
-				</h2>
+					<h2>
+						<?php _e( 'Preview', 'job_manager' ); ?>
+					</h2>
+				</div>
 				<div class="job_listing_preview single_job_listing">
 					<h1><?php the_title(); ?></h1>
 					<?php get_job_manager_template_part( 'content-single', 'job_listing' ); ?>
@@ -505,6 +517,8 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * Done Step
 	 */
 	public static function done() {
+		do_action( 'job_manager_job_submitted', self::$job_id );
+
 		get_job_manager_template( 'job-submitted.php', array( 'job' => get_post( self::$job_id ) ) );
 	}
 
