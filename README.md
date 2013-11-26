@@ -3,7 +3,7 @@ WP-Brasil](http://wp-brasil.org), que é uma instalação WordPress -- obviament
 
 Para copiar o site com todos os subprojetos:
 
-    git clone --recursive git@github.com/WP-Brasil/WP-Brasil.git .
+    git clone --recursive git@github.com/wpbrasil/WP-Brasil.git .
 
 Copie o arquivo `wp-config-dev.php` para `wp-config.php` como uma primeira
 referência. Sugestões no `wp-config.php` de produção podem ser feitas nele.
