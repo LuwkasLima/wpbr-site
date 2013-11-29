@@ -1,0 +1,25 @@
+# Production
+forum
+dev
+error.log
+wp/
+
+# WordPress
+wp-config.php
+wp-config-master.php
+wp/wp-content/uploads
+wp/wp-content/upgrade
+wp/sitemap*
+
+# Vagrant
+Vagrantfile
+.vagrant
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Composer
+vendor/
+composer.lock
