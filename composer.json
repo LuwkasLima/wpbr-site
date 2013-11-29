@@ -1,0 +1,121 @@
+{
+	"name": "wpbrasil/site",
+	"description": "Comunidade WordPress Website",
+	"keywords": [
+		"wordpress"
+	],
+	"homepage": "https://github.com/wpbrasil/wpbr-site",
+	"license": "GPL-2.0+",
+	"authors": [
+		{
+			"name": "Comunidade WordPress Brasil",
+			"homepage": "http://wp-brasil.org/"
+		}
+	],
+	"type": "project",
+	"repositories": [
+		{
+			"type": "composer",
+			"url": "http://wpackagist.org"
+		},
+		{
+			"type": "package",
+			"package": {
+				"name": "wordpress",
+				"type": "webroot",
+				"version": "3.7.1",
+				"dist": {
+					"type": "zip",
+					"url": "http://br.wordpress.org/wordpress-3.7.1-pt_BR.zip"
+				},
+				"require": {
+					"fancyguy/webroot-installer": "1.0.0"
+				}
+			}
+		},
+		{
+			"type": "package",
+			"package": {
+				"name": "wpbr/geouser",
+				"type": "wordpress-plugin",
+				"version": "1.0.0",
+				"dist": {
+					"type": "zip",
+					"url": "https://github.com/wpbrasil/wpbr-geouser/archive/master.zip"
+				}
+			}
+		},
+		{
+			"type": "package",
+			"package": {
+				"name": "p2",
+				"type": "wordpress-theme",
+				"version": "1.5.2",
+				"dist": {
+					"type": "zip",
+					"url": "http://wordpress.org/themes/download/p2.1.5.2.zip"
+				}
+			}
+		},
+		{
+			"type": "package",
+			"package": {
+				"name": "wpbr/mapa",
+				"type": "wordpress-theme",
+				"version": "1.0.0",
+				"dist": {
+					"type": "zip",
+					"url": "https://github.com/wpbrasil/wpbr-mapa/archive/master.zip"
+				}
+			}
+		},
+		{
+			"type": "package",
+			"package": {
+				"name": "wpbr/participe",
+				"type": "wordpress-theme",
+				"version": "1.0.0",
+				"dist": {
+					"type": "zip",
+					"url": "https://github.com/wpbrasil/wpbr-participe/archive/master.zip"
+				}
+			}
+		},
+		{
+			"type": "package",
+			"package": {
+				"name": "wpbr/tema",
+				"type": "wordpress-theme",
+				"version": "1.0.0",
+				"dist": {
+					"type": "zip",
+					"url": "https://github.com/wpbrasil/wpbr-tema/archive/master.zip"
+				}
+			}
+		}
+	],
+	"require": {
+		"php": ">=5.3.0",
+		"wordpress": "3.7.1",
+		"composer/installers": "~1.0",
+		"fancyguy/webroot-installer": "1.0.0",
+		"wpackagist/akismet": "2.5.9",
+		"wpackagist/google-sitemap-generator": "3.*",
+		"wpackagist/jetpack": "2.6",
+		"wpackagist/multisite-user-management": "1.1",
+		"wpackagist/restrict-tags": "1.0",
+		"wpackagist/sabre": "1.2.2",
+		"wpackagist/subscribe-to-comments": "2.1.2",
+		"wpackagist/woocommerce": "2.0.20",
+		"wpackagist/wp-job-manager": "1.5.0",
+		"p2": "1.5.2",
+		"wpbr/geouser": "1.0.0",
+		"wpbr/mapa": "1.0.0",
+		"wpbr/participe": "1.0.0",
+		"wpbr/tema": "1.0.0"
+	},
+	"extra": {
+		"webroot-dir": "wp",
+		"webroot-package": "wordpress"
+	}
+}
