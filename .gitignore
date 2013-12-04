@@ -5,7 +5,7 @@ error.log
 wp/
 
 # WordPress
-wp-config.php
+wp-config-prod.php
 wp-config-master.php
 wp/wp-content/uploads
 wp/wp-content/upgrade
