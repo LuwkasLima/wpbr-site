@@ -1,10 +1,10 @@
 <?php
 // Load environment config.
-if ( file_exists( dirname( __FILE__ ) . '/wp-config-dev.php' ) ) {
+if ( file_exists( dirname( __FILE__ ) . '/dev-config.php' ) ) {
 	define( 'WP_LOCAL_DEV', true );
-	include( dirname( __FILE__ ) . '/wp-config-dev.php' );
+	include( dirname( __FILE__ ) . '/dev-config.php' );
 } else {
-	include( dirname( __FILE__ ) . '/wp-config-prod.php' );
+	include( dirname( __FILE__ ) . '/prod-config.php' );
 }
 
 // Language.
