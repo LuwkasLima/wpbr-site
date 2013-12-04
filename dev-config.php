@@ -1,4 +1,8 @@
 <?php
+/**
+ * Development environment configuration.
+ */
+
 // Database.
 define( 'DB_NAME', 'wpbrasil' );
 define( 'DB_USER', 'root' );
