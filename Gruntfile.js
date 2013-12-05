@@ -44,19 +44,27 @@ module.exports = function( grunt ) {
 					'wp/readme.html',
 					'wp/license.txt',
 					'wp/wp-content/',
-					'wp/themes/tema/src/',
-					'wp/themes/tema/assets/sass',
-					'wp/themes/tema/assets/js/main.js',
-					'wp/themes/tema/assets/js/jquery.fitvids.min.js',
-					'wp-content/uploads'
+					'wp-content/themes/tema/src/',
+					'wp-content/themes/tema/assets/sass/',
+					'wp-content/themes/tema/assets/js/main.js',
+					'wp-content/themes/tema/assets/js/jquery.fitvids.min.js',
+					'wp-content/uploads/'
 				],
 				recursive: true,
 			},
-			production: {
+			dev: {
 				options: {
 					src: './',
 					dest: '/var/www/wp-brasil',
-					host: 'vagrant@wp-brasil.org',
+					host: '192.168.56.101',
+					syncDestIgnoreExcl: true
+				}
+			},
+			prod: {
+				options: {
+					src: './',
+					dest: '~/wp-brasil.org',
+					host: 'wp-brasil.org',
 					syncDestIgnoreExcl: true
 				}
 			}
@@ -110,6 +118,6 @@ module.exports = function( grunt ) {
 	// Deploy task
 	grunt.registerTask( 'deploy', [
 		'update',
-		'rsync:production'
+		'rsync:prod'
 	] );
 };
