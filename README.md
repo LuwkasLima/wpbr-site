@@ -21,13 +21,13 @@ Exemplo de um arquivo `prod-config.php`:
  */
 
 // Database.
-define( 'DB_NAME', 'wpbrasil' );
-define( 'DB_USER', 'root' );
-define( 'DB_PASSWORD', '' );
+define( 'DB_NAME', 'database' );
+define( 'DB_USER', 'user' );
+define( 'DB_PASSWORD', 'pass' );
 define( 'DB_HOST', 'localhost' );
 define( 'DB_CHARSET', 'utf8' );
 define( 'DB_COLLATE', '' );
-$table_prefix = 'wpbr_';
+$table_prefix = 'prefix_';
 
 // Salts (https://api.wordpress.org/secret-key/1.1/salt).
 define( 'AUTH_KEY', 'auth_key' );
@@ -50,11 +50,40 @@ define( 'WP_DEBUG_DISPLAY', false );
 @ini_set( 'display_errors', 0 );
 ```
 
+#### Ambiente de Desenvolvimento ####
+
+TODO: depois passo o vagrant que usei.
+
+Configurar vagrant para usar o endereço `192.168.56.101` e criar um alias no `/etc/hosts` como:
+
+```
+192.168.56.101 wp-brasil.org
+```
+
+Configurar usuário de SSH em `~/.ssh/config`:
+
+```
+Host 192.168.56.101
+    User vagrant
+```
+
+#### Ambiente de Produção ####
+
+COnfigurar usuário e chave de SSH em `~/.ssh/config`:
+
+```
+Host wp-brasil.org
+    IdentityFile ~/.ssh/SUA_CHAVE_rsa
+    User USUÁRIO_DO_SERVIDOR
+```
+
 ## Comandos ##
 
 Comandos do Grunt para build e deploy.
 
-#### Fazer build de todas as dependências (projeto, temas, plugins e etc) ####
+#### Fazer build ####
+
+Faz build de todas as dependências (projeto, temas, plugins e etc).
 
 ```bash
 grunt build
@@ -62,14 +91,30 @@ grunt build
 
 #### Atualizar as dependências ####
 
+Faz update das dependências do build.
+
 ```bash
 grunt update
 ```
 
 #### Fazer deploy ####
 
+Faz update e deploy rsync no ambiente de produção.
+
 ```bash
 grunt deploy
+```
+
+#### RSYNC no ambiente de produção ####
+
+```bash
+grunt rsync:prod
+```
+
+#### RSYNC no ambiente de desenvolvimento ####
+
+```bash
+grunt rsync:dev
 ```
 
 #### Limpar tudo ####
@@ -77,3 +122,15 @@ grunt deploy
 ```bash
 grunt clean
 ```
+
+## Referências ##
+
+* [Simplify Your Life With an SSH Config File](http://nerderati.com/2011/03/simplify-your-life-with-an-ssh-config-file/)
+* [WordPress local dev tips: DB & plugins](http://markjaquith.wordpress.com/2011/06/24/wordpress-local-dev-tips/)
+* [Best practice for versioning wp-config.php?](http://wordpress.stackexchange.com/questions/52682/best-practice-for-versioning-wp-config-php#answer-53014)
+* [Configure the WordPress Git Repository]()
+* [Your Guide to Composer in WordPress](http://composer.rarst.net/)
+* [WordPress Packagist](http://wpackagist.org/)
+* [Composer-WordPress-Skeleton](https://github.com/ADARTA/Composer-Wordpress-Skeleton)
+* [wp-composer](https://github.com/bbrothers/wp-composer)
+* [Setting Up Grunt For WordPress](http://tommcfarlin.com/setting-up-grunt-for-wordpress/)
