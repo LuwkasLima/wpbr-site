@@ -69,7 +69,7 @@ Host 192.168.56.101
 
 #### Ambiente de Produção ####
 
-COnfigurar usuário e chave de SSH em `~/.ssh/config`:
+Configurar usuário e chave de SSH em `~/.ssh/config`:
 
 ```
 Host wp-brasil.org
