@@ -25,3 +25,6 @@ Vagrantfile
 # Composer
 vendor/
 composer.lock
+
+# Grunt
+node_modules/
