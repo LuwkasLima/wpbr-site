@@ -9,17 +9,17 @@ $my_server_name = ( ! empty( $my_server_port ) ? ( $_SERVER['SERVER_NAME'] . $my
 if ( 'http://' . $my_server_name . '/wp' == get_option( 'home' ) ) {
 	update_option( 'siteurl', 'http://' . $my_server_name . '/wp' );
 	update_option( 'home', 'http://' . $my_server_name );
-	update_option( 'upload_path', $_SERVER['DOCUMENT_ROOT'] . '\media' );
+	update_option( 'upload_path', $_SERVER['DOCUMENT_ROOT'] . '/media' );
 	update_option( 'upload_url_path', 'http://' . $my_server_name . '/media' );
 	update_option( 'permalink_structure', '/%postname%/' );
 }
 
-if ( '' == get_option('upload_url_path') ){
+if ( '' == get_option('upload_url_path') ) {
 	update_option( 'upload_url_path', 'http://' . $my_server_name . '/media' );
 }
 
 if ( '' == get_option('upload_path') || 'media' == get_option('upload_path') ) {
-	update_option( 'upload_path', $_SERVER['DOCUMENT_ROOT'] . '\media' );
+	update_option( 'upload_path', $_SERVER['DOCUMENT_ROOT'] . '/media' );
 }
 
 if ( defined( 'FRONT_PAGE' ) && defined( 'POSTS_PAGE' ) && ! get_option( 'page_on_front' ) ) {
