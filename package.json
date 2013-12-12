@@ -1,6 +1,6 @@
 {
-  "name": "wpbrasil-site",
-  "description": "Comunidade WordPress Website",
+  "name": "wpbr-site",
+  "description": "Comunidade WordPress Brasil",
   "version": "1.0.0",
   "main": "Gruntfile.js",
   "repository": {

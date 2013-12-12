@@ -1,6 +1,9 @@
-# Comunidade WordPress Website #
+# Website da Comunidade WordPress Brasil #
 
-Repositório com dependências do projeto e scripts de build e deploy.
+Este repositório contém as dependências e scripts para build e deploy do site
+da Comunidade WordPress Brasil. O seguinte roteiro tem como objetivo mostrar
+como instalar as ferramentas necessários e montar o seu próprio ambiente de
+desenvolvimento.
 
 ## Requerimentos ##
 
@@ -8,14 +11,54 @@ Repositório com dependências do projeto e scripts de build e deploy.
 * [NodeJS](http://nodejs.org/download/)
 * [GruntJS](http://gruntjs.com/getting-started)
 
-## Ambientes ##
+## Montando o seu ambiente ##
 
-Esta pré-configurado um arquivo `dev-config.php` para as configurações do ambiente de desenvolvimento.  
-É possível criar um arquivo `prod-config.php` para o ambiente de produção que irá sobrescrever sozinho as configurações do arquivo de desenvolvinento.
+O seguinte roteiro é para ambientes Linux. Se você desenvolve em Windows pode
+nos ajudar a gerar uma outra parte desta documentação com os mesmos
+procedimentos.
+
+Vá para a pasta do seu servidor Web local e clone este repositório do Github.
+
+    git clone git@github.com:wpbrasil/wpbr-site.git
+	cd wpbr-site
+
+Instale as ferramentas necessárias.
+
+    sudo apt-get install nodejs        # Ubuntu
+	sudo apt-get install nodejs-legacy # Debian
+	sudo npm install grunt grunt-rsync grunt-shell grunt-composer grunt-contrib-clean load-grunt-tasks
+	curl -sS https://getcomposer.org/installer | php
+
+Com tudo instalado, baixe agora os temas e plugins que compõem o site.
+
+    php composer.phar install
+
+Isto criará uma pasta `wp` para o WordPress e outra `wp-content` para os
+plugins e temas utilizados. Veja que a pasta `wp/wp-content` não é utilizada
+neste projeto, e só está lá porque é distribuída juntamente com o WordPress.
+
+Agora você já deve conseguir acessar o `http://localhost` no seu navegador e
+fazer a instalação do WordPress ajustando as informaçẽs de banco de dados e
+tudo mais. É recomendado que você siga as credenciais em `dev-config.php` para
+que não seja necessário modificar este arquivo, caso contrário você pode acabar
+fazendo alguma modificação nele por engano.
+
+Ao habilitar o `tema` você notará que não existe CSS disponível nele. Para
+gerar tudo isto execute:
+
+    grunt build
+
+## Configuração ##
+
+O arquivo `dev-config.php` contém as pré-configurações do ambiente de
+desenvolvimento. É possível criar um arquivo `prod-config.php` para o ambiente
+de produção que irá sobrescrever sozinho as configurações do arquivo de
+desenvolvinento.
 
 Exemplo de um arquivo `prod-config.php`:
 
 ```php
+<?php
 /**
  * Development environment configuration.
  */
@@ -54,7 +97,8 @@ define( 'WP_DEBUG_DISPLAY', false );
 
 TODO: depois passo o vagrant que usei.
 
-Configurar vagrant para usar o endereço `192.168.56.101` e criar um alias no `/etc/hosts` como:
+Configurar vagrant para usar o endereço `192.168.56.101` e criar um alias no
+`/etc/hosts` como:
 
 ```
 192.168.56.101 wp-brasil.org

@@ -12,6 +12,9 @@ wp-config-master.php
 wp/wp-content/uploads
 wp/wp-content/upgrade
 wp/sitemap*
+wp-content/debug.log
+wp-content/uploads
+wp-content/upgrade
 
 # Vagrant
 Vagrantfile
@@ -25,6 +28,7 @@ Vagrantfile
 # Composer
 vendor/
 composer.lock
+composer.phar
 
 # Grunt
 node_modules/
