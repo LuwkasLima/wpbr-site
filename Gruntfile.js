@@ -109,6 +109,12 @@ module.exports = function( grunt ) {
 		'default'
 	] );
 
+	// Build source task
+	grunt.registerTask( 'source', [
+		'composer:install:prefer-source',
+		'shell:installThemeDependencies'
+	] );
+
 	// Update dependencies task
 	grunt.registerTask( 'update', [
 		'composer:update',
