@@ -17,21 +17,37 @@ O seguinte roteiro é para ambientes Linux. Se você desenvolve em Windows pode
 nos ajudar a gerar uma outra parte desta documentação com os mesmos
 procedimentos.
 
-Vá para a pasta do seu servidor Web local e clone este repositório do Github.
+**1-** Vá para a pasta do seu servidor Web local e clone este repositório do Github.
 
-    git clone git@github.com:wpbrasil/wpbr-site.git
-	cd wpbr-site
+```bash
+git clone git@github.com:wpbrasil/wpbr-site.git
+cd wpbr-site
+```
 
-Instale as ferramentas necessárias.
+**2-** Instale as ferramentas necessárias (caso você já possua elas instaladas
+pode pular para o passo 3).
 
-    sudo apt-get install nodejs        # Ubuntu
-	sudo apt-get install nodejs-legacy # Debian
-	sudo npm install grunt grunt-rsync grunt-shell grunt-composer grunt-contrib-clean load-grunt-tasks
-	curl -sS https://getcomposer.org/installer | php
+```bash
+sudo apt-get install nodejs        # Ubuntu
+sudo apt-get install nodejs-legacy # Debian
+npm install -g grunt-cli
+curl -sS https://getcomposer.org/installer | php
+mv composer.phar /usr/local/bin/composer
+```
 
-Com tudo instalado, baixe agora os temas e plugins que compõem o site.
+**3-** Agora você já pode baixar as dependências do Grunt no projeto:
 
-    php composer.phar install
+```bash
+npm install
+```
+
+Esse comando vai ler o arquivo `package.json` e instalar 
+
+**4-** Agora podemos baixar os temas e plugins que compõem o site.
+
+```bash
+grunt source
+```
 
 Isto criará uma pasta `wp` para o WordPress e outra `wp-content` para os
 plugins e temas utilizados. Veja que a pasta `wp/wp-content` não é utilizada
@@ -43,12 +59,7 @@ tudo mais. É recomendado que você siga as credenciais em `dev-config.php` para
 que não seja necessário modificar este arquivo, caso contrário você pode acabar
 fazendo alguma modificação nele por engano.
 
-Ao habilitar o `tema` você notará que não existe CSS disponível nele. Para
-gerar tudo isto execute:
-
-    grunt build
-
-## Configuração ##
+## Configurando para a produção ##
 
 O arquivo `dev-config.php` contém as pré-configurações do ambiente de
 desenvolvimento. É possível criar um arquivo `prod-config.php` para o ambiente
@@ -108,7 +119,7 @@ Configurar usuário de SSH em `~/.ssh/config`:
 
 ```
 Host 192.168.56.101
-    User vagrant
+	User vagrant
 ```
 
 #### Ambiente de Produção ####
@@ -117,20 +128,30 @@ Configurar usuário e chave de SSH em `~/.ssh/config`:
 
 ```
 Host wp-brasil.org
-    IdentityFile ~/.ssh/SUA_CHAVE_rsa
-    User USUÁRIO_DO_SERVIDOR
+	IdentityFile ~/.ssh/SUA_CHAVE_rsa
+	User USUÁRIO_DO_SERVIDOR
 ```
 
 ## Comandos ##
 
 Comandos do Grunt para build e deploy.
 
-#### Fazer build ####
+#### Fazer build para produção ####
 
 Faz build de todas as dependências (projeto, temas, plugins e etc).
 
 ```bash
 grunt build
+```
+
+#### Fazer build para desenvolvimento ####
+
+Faz build de todas as dependências (projeto, temas, plugins e etc)
+incluíndo dependências de desenvolvimento e clonando os subprojetos
+para que seja possível fazer alterações e commits.
+
+```bash
+grunt source
 ```
 
 #### Atualizar as dependências ####
