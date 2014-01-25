@@ -24,47 +24,47 @@ class WP_Job_Manager_Writepanels {
 	public function job_listing_fields() {
 		return apply_filters( 'job_manager_job_listing_data_fields', array(
 			'_job_location' => array(
-				'label' => __( 'Job location', 'job_manager' ),
-				'placeholder' => __( 'e.g. "London, UK", "New York", "Houston, TX"', 'job_manager' ),
-				'description' => __( 'Leave this blank if the job can be done from anywhere (i.e. telecommuting)', 'job_manager' )
+				'label' => __( 'Job location', 'wp-job-manager' ),
+				'placeholder' => __( 'e.g. "London, UK", "New York", "Houston, TX"', 'wp-job-manager' ),
+				'description' => __( 'Leave this blank if the job can be done from anywhere (i.e. telecommuting)', 'wp-job-manager' )
 			),
 			'_application' => array(
-				'label' => __( 'Application email/URL', 'job_manager' ),
-				'placeholder' => __( 'URL or email which applicants use to apply', 'job_manager' )
+				'label' => __( 'Application email/URL', 'wp-job-manager' ),
+				'placeholder' => __( 'URL or email which applicants use to apply', 'wp-job-manager' )
 			),
 			'_company_name' => array(
-				'label' => __( 'Company name', 'job_manager' ),
+				'label' => __( 'Company name', 'wp-job-manager' ),
 				'placeholder' => ''
 			),
 			'_company_website' => array(
-				'label' => __( 'Company website', 'job_manager' ),
+				'label' => __( 'Company website', 'wp-job-manager' ),
 				'placeholder' => ''
 			),
 			'_company_tagline' => array(
-				'label' => __( 'Company tagline', 'job_manager' ),
-				'placeholder' => __( 'Brief description about the company', 'job_manager' )
+				'label' => __( 'Company tagline', 'wp-job-manager' ),
+				'placeholder' => __( 'Brief description about the company', 'wp-job-manager' )
 			),
 			'_company_twitter' => array(
-				'label' => __( 'Company Twitter', 'job_manager' ),
+				'label' => __( 'Company Twitter', 'wp-job-manager' ),
 				'placeholder' => '@yourcompany'
 			),
 			'_company_logo' => array(
-				'label' => __( 'Company logo', 'job_manager' ),
-				'placeholder' => __( 'URL to the company logo', 'job_manager' ),
+				'label' => __( 'Company logo', 'wp-job-manager' ),
+				'placeholder' => __( 'URL to the company logo', 'wp-job-manager' ),
 				'type'  => 'file'
 			),
 			'_filled' => array(
-				'label' => __( 'Position filled?', 'job_manager' ),
+				'label' => __( 'Position filled?', 'wp-job-manager' ),
 				'type'  => 'checkbox'
 			),
 			'_featured' => array(
-				'label' => __( 'Feature this job listing?', 'job_manager' ),
+				'label' => __( 'Feature this job listing?', 'wp-job-manager' ),
 				'type'  => 'checkbox',
-				'description' => __( 'Featured listings will be sticky during searches, and can be styled differently.', 'job_manager' )
+				'description' => __( 'Featured listings will be sticky during searches, and can be styled differently.', 'wp-job-manager' )
 			),
 			'_job_expires' => array(
-				'label'       => __( 'Job Expires', 'job_manager' ),
-				'placeholder' => __( 'yyyy-mm-dd', 'job_manager' )
+				'label'       => __( 'Job Expires', 'wp-job-manager' ),
+				'placeholder' => __( 'yyyy-mm-dd', 'wp-job-manager' )
 			)
 		) );
 	}
@@ -76,18 +76,16 @@ class WP_Job_Manager_Writepanels {
 	 * @return void
 	 */
 	public function add_meta_boxes() {
-		add_meta_box( 'job_listing_data', __( 'Job Listing Data', 'job_manager' ), array( $this, 'job_listing_data' ), 'job_listing', 'normal', 'high' );
+		add_meta_box( 'job_listing_data', __( 'Job Listing Data', 'wp-job-manager' ), array( $this, 'job_listing_data' ), 'job_listing', 'normal', 'high' );
 	}
 
 	/**
 	 * input_text function.
 	 *
-	 * @access private
 	 * @param mixed $key
 	 * @param mixed $field
-	 * @return void
 	 */
-	private function input_file( $key, $field ) {
+	public function input_file( $key, $field ) {
 		global $thepostid;
 
 		if ( empty( $field['value'] ) )
@@ -96,7 +94,7 @@ class WP_Job_Manager_Writepanels {
 		<p class="form-field">
 			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $field['label'] ) ; ?>:</label>
 			<input type="text" class="file_url" name="<?php echo esc_attr( $key ); ?>" id="<?php echo esc_attr( $key ); ?>" placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>" value="<?php echo esc_attr( $field['value'] ); ?>" />
-			<?php if ( ! empty( $field['description'] ) ) : ?><span class="description"><?php echo $field['description']; ?></span><?php endif; ?> <button class="button upload_image_button" data-uploader_button_text="<?php _e( 'Use as company logo', 'job_manager' ); ?>"><?php _e( 'Upload company logo', 'job_manager' ); ?></button>
+			<?php if ( ! empty( $field['description'] ) ) : ?><span class="description"><?php echo $field['description']; ?></span><?php endif; ?> <button class="button upload_image_button" data-uploader_button_text="<?php _e( 'Use image', 'wp-job-manager' ); ?>"><?php _e( 'Upload image', 'wp-job-manager' ); ?></button>
 		</p>
 		<script type="text/javascript">
 			// Uploading files
@@ -142,12 +140,10 @@ class WP_Job_Manager_Writepanels {
 	/**
 	 * input_text function.
 	 *
-	 * @access private
 	 * @param mixed $key
 	 * @param mixed $field
-	 * @return void
 	 */
-	private function input_text( $key, $field ) {
+	public function input_text( $key, $field ) {
 		global $thepostid;
 
 		if ( empty( $field['value'] ) )
@@ -164,12 +160,10 @@ class WP_Job_Manager_Writepanels {
 	/**
 	 * input_text function.
 	 *
-	 * @access private
 	 * @param mixed $key
 	 * @param mixed $field
-	 * @return void
 	 */
-	private function input_textarea( $key, $field ) {
+	public function input_textarea( $key, $field ) {
 		global $thepostid;
 
 		if ( empty( $field['value'] ) )
@@ -182,16 +176,62 @@ class WP_Job_Manager_Writepanels {
 		</p>
 		<?php
 	}
+	
+	/**
+	 * input_select function.
+	 *
+	 * @param mixed $key
+	 * @param mixed $field
+	 */
+	public function input_select( $key, $field ) {
+		global $thepostid;
+
+		if ( empty( $field['value'] ) )
+			$field['value'] = get_post_meta( $thepostid, $key, true );
+		?>
+		<p class="form-field">
+			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $field['label'] ) ; ?>:</label>
+			<select name="<?php echo esc_attr( $key ); ?>" id="<?php echo esc_attr( $key ); ?>">
+				<?php foreach ( $field['options'] as $key => $value ) : ?>
+				<option value="<?php echo esc_attr( $key ); ?>" <?php if ( isset( $field['value'] ) ) selected( $field['value'], $key ); ?>><?php echo esc_html( $value ); ?></option>
+				<?php endforeach; ?>
+			</select>
+			<?php if ( ! empty( $field['description'] ) ) : ?><span class="description"><?php echo $field['description']; ?></span><?php endif; ?>
+		</p>
+		<?php
+	}
+
+	/**
+	 * input_select function.
+	 *
+	 * @param mixed $key
+	 * @param mixed $field
+	 */
+	public function input_multiselect( $key, $field ) {
+		global $thepostid;
+
+		if ( empty( $field['value'] ) )
+			$field['value'] = get_post_meta( $thepostid, $key, true );
+		?>
+		<p class="form-field">
+			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $field['label'] ) ; ?>:</label>
+			<select multiple="multiple" name="<?php echo esc_attr( $key ); ?>[]" id="<?php echo esc_attr( $key ); ?>">
+				<?php foreach ( $field['options'] as $key => $value ) : ?>
+				<option value="<?php echo esc_attr( $key ); ?>" <?php if ( ! empty( $field['value'] ) && is_array( $field['value'] ) ) selected( in_array( $key, $field['value'] ), true ); ?>><?php echo esc_html( $value ); ?></option>
+				<?php endforeach; ?>
+			</select>
+			<?php if ( ! empty( $field['description'] ) ) : ?><span class="description"><?php echo $field['description']; ?></span><?php endif; ?>
+		</p>
+		<?php
+	}
 
 	/**
 	 * input_checkbox function.
 	 *
-	 * @access private
 	 * @param mixed $key
 	 * @param mixed $field
-	 * @return void
 	 */
-	private function input_checkbox( $key, $field ) {
+	public function input_checkbox( $key, $field ) {
 		global $thepostid;
 
 		if ( empty( $field['value'] ) )
@@ -269,6 +309,7 @@ class WP_Job_Manager_Writepanels {
 		global $wpdb;
 
 		foreach ( $this->job_listing_fields() as $key => $field ) {
+			// Expirey date
 			if ( '_job_expires' == $key ) {
 				if ( ! empty( $_POST[ $key ] ) ) {
 					update_post_meta( $post_id, $key, date( 'Y-m-d', strtotime( sanitize_text_field( $_POST[ $key ] ) ) ) );
@@ -278,10 +319,26 @@ class WP_Job_Manager_Writepanels {
 				continue;
 			}
 
-			if ( isset( $_POST[ $key ] ) ) {
-				update_post_meta( $post_id, $key, sanitize_text_field( $_POST[ $key ] ) );
-			} elseif ( ! empty( $field['type'] ) && $field['type'] == 'checkbox' ) {
-				update_post_meta( $post_id, $key, 0 );
+			// Locations
+			elseif ( '_job_location' == $key ) {
+				if ( update_post_meta( $post_id, $key, sanitize_text_field( $_POST[ $key ] ) ) ) {
+					do_action( 'job_manager_job_location_edited', $post_id, sanitize_text_field( $_POST[ $key ] ) );
+				} elseif ( apply_filters( 'job_manager_geolocation_enabled', true ) && ! WP_Job_Manager_Geocode::has_location_data( $post_id ) ) {
+					WP_Job_Manager_Geocode::generate_location_data( $post_id, sanitize_text_field( $_POST[ $key ] ) );
+				}
+			}
+
+			// Everything else
+			else {
+				if ( isset( $_POST[ $key ] ) ) {
+					if ( is_array( $_POST[ $key ] ) ) {
+						update_post_meta( $post_id, $key, array_map( 'sanitize_text_field', $_POST[ $key ] ) );
+					} else {
+						update_post_meta( $post_id, $key, sanitize_text_field( $_POST[ $key ] ) );
+					}
+				} elseif ( ! empty( $field['type'] ) && $field['type'] == 'checkbox' ) {
+					update_post_meta( $post_id, $key, 0 );
+				}
 			}
 		}
 	}

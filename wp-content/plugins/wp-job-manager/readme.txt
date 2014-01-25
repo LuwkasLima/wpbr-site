@@ -1,21 +1,21 @@
 === WP Job Manager ===
 Contributors: mikejolley
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=mike.jolley@me.com&currency_code=&amount=&return=&item_name=Buy+me+a+coffee+for+A+New+Job+Board+Plugin+for+WordPress
-Tags: job listing, job board, job, jobs, company
-Requires at least: 3.5
-Tested up to: 3.7
-Stable tag: 1.5.0
+Tags: job listing, job board, job, jobs, company, hiring, employment, employees, candidate, freelance, internship
+Requires at least: 3.8
+Tested up to: 3.8
+Stable tag: 1.7.1
 
 Manage job listings from the WordPress admin panel, and allow users to post jobs directly to your site.
 
 == Description ==
 
-WP Job Manager is a _lightweight_ plugin for adding job-board functionality to your WordPress site.  Being shortcode based, it can work with any theme (given a bit of CSS styling) and is really simple to setup.
+WP Job Manager is a **lightweight** plugin for adding job-board functionality to your WordPress site. Being shortcode based, it can work with any theme (given a bit of CSS styling) and is really simple to setup.
 
 = Features =
 
-* Add, manage and categorise job listings using the familiar WordPress UI.
-* Searchable & filterable ajax powered job listings added through shortcodes.
+* Add, manage, and categorise job listings using the familiar WordPress UI.
+* Searchable & filterable ajax powered job listings added to your pages via shortcodes.
 * Frontend forms for guests and registered users to submit & manage job listings.
 * Allow job listers to preview their listing before it goes live. The preview matches the appearance of a live job listing.
 * Each listing can be tied to an email or website address so that job seekers can apply to the jobs.
@@ -33,11 +33,17 @@ Documentation will be maintained on the [GitHub Wiki here](https://github.com/mi
 
 = Add-ons =
 
-Add-ons, such as __simple paid listings__ can be [found here](http://mikejolley.com/projects/wp-job-manager/add-ons/). Take a look!
+Additonal functionality can be added through add-ons - you can browse these after installing the plugin by going to `Job Listings > Add-ons`.
+
+Some notable add-ons include:
+
+* [Simple Paid Listings](http://mikejolley.com/projects/wp-job-manager/add-ons/simple-paid-listings/) - Charge users a single fee to post a job via Stripe or PayPal.
+* [WooCommerce Paid Lisings](http://mikejolley.com/projects/wp-job-manager/add-ons/woocommerce-paid-listings/) - Charge users to post jobs using WooCommerce to take payment.
+* [Job Alerts](http://mikejolley.com/projects/wp-job-manager/add-ons/job-alerts/) - Add saved search/email alert functionality.
 
 = Contributing and reporting bugs =
 
-You can contribute code and localizations to this plugin via GitHub: [https://github.com/mikejolley/wp-job-manager](https://github.com/mikejolley/wp-job-manager)
+You can contribute code to this plugin via GitHub: [https://github.com/mikejolley/wp-job-manager](https://github.com/mikejolley/wp-job-manager) and localizations via Transifex: [https://www.transifex.com/projects/p/wp-job-manager/](https://www.transifex.com/projects/p/wp-job-manager/)
 
 = Support =
 
@@ -61,6 +67,18 @@ The manual installation method involves downloading the plugin and uploading it 
 * Using an FTP program, or your hosting control panel, upload the unzipped plugin folder to your WordPress installation's `wp-content/plugins/` directory.
 * Activate the plugin from the Plugins menu within the WordPress admin.
 
+= Getting started =
+
+Once installed:
+
+1. Create a page called "jobs" and inside place the `[jobs]` shortcode. This will list your jobs.
+2. Create a page called "submit job" and inside place the `[submit_job_form]` shortcode if you want front-end submissions.
+3. Create a page called "job dashboard" and inside place the `[job_dashboard]` shortcode for logged in users to manage their listings. 
+
+**Note when using shortcodes**, if the content looks blown up/spaced out/poorly styled, edit your page and above the visual editor click on the 'text' tab. Then remove any 'pre' or 'code' tags wrapping your shortcode.
+
+For more information, [read the documentation](https://github.com/mikejolley/wp-job-manager/wiki).
+
 == Screenshots ==
 
 1. The submit job form.
@@ -71,6 +89,44 @@ The manual installation method involves downloading the plugin and uploading it 
 6. Job listings in admin.
 
 == Changelog ==
+
+= 1.7.1 =
+* Updated textdomain to wp-job-manager
+* Re-done .pot file 
+* Additonal filters for ajax responses
+* Moved localisations to Transifex https://www.transifex.com/projects/p/wp-job-manager/
+
+= 1.7.0 = 
+* Added geolocation to save location data to meta after posting or saving a job. This will be used by other plugins.
+* Filter job_manager_geolocation_enabled and return false to turn off geolocation features.
+* Jobs shortcode can now be passed 'location' and 'keywords' to set the default for filters, or show only jobs with those keywords if filters are disabled
+* Html fix in widget
+* Add border around wp editor
+* Fix company logo in firefox
+* submit_job_form_wp_editor_args filter
+* "Empty" categories are visible when filtering jobs in admin.
+
+= 1.6.0 = 
+* MP6/WP 3.8 optimised styling. Min version 3.8 for new styling.
+* Removed images previously used in admin.
+* Tweak the_company_logo() to check if logo is valid URL.
+* Replaced Genericons with custom set
+* Only show link to view job on dashboard when published
+
+= 1.5.2 =
+* Fix wp-editor field
+* Fix editing job images
+
+= 1.5.1 =
+* Changed get_the_time to get_post_time
+* Added textarea and wp-editor to form api
+* When using the job submit form, generate a more unqiue slug for the job - company-location-type-job-title
+* Ability to remove image from job submission form
+* Update icon font
+* Fix job_types filters
+* Field_select in admin
+* Fix access control on job editing
+* Job forms multiselect support
 
 = 1.5.0 =
 * Ability to edit job expiration date manually via admin

@@ -189,13 +189,13 @@ function job_manager_get_filtered_links( $args = array() ) {
 
 	$links = apply_filters( 'job_manager_job_filters_showing_jobs_links', array(
 		'reset' => array(
-			'name' => __( 'Reset', 'job_manager' ),
+			'name' => __( 'Reset', 'wp-job-manager' ),
 			'url'  => '#'
 		),
 		'rss_link' => array(
-			'name' => __( 'RSS', 'job_manager' ),
+			'name' => __( 'RSS', 'wp-job-manager' ),
 			'url'  => get_job_listing_rss_link( apply_filters( 'job_manager_get_listings_custom_filter_rss_args', array(
-				'type'           => implode( ',', $args['filter_job_types'] ),
+				'type'           => isset( $args['filter_job_types'] ) ? implode( ',', $args['filter_job_types'] ) : '',
 				'location'       => $args['search_location'],
 				'job_categories' => implode( ',', $args['search_categories'] ),
 				's'              => $args['search_keywords'],
@@ -230,10 +230,11 @@ if ( ! function_exists( 'job_manager_create_account' ) ) :
 /**
  * Handle account creation.
  *
- * @param  [type] $account_email
+ * @param  string $account_email
+ * @param  string $role 
  * @return WP_error | bool was an account created?
  */
-function wp_job_manager_create_account( $account_email ) {
+function wp_job_manager_create_account( $account_email, $role = '' ) {
 	global  $current_user;
 
 	$user_email = apply_filters( 'user_registration_email', sanitize_email( $account_email ) );
@@ -242,10 +243,10 @@ function wp_job_manager_create_account( $account_email ) {
 		return false;
 
 	if ( ! is_email( $user_email ) )
-		return new WP_Error( 'validation-error', __( 'Your email address isn&#8217;t correct.', 'job_manager' ) );
+		return new WP_Error( 'validation-error', __( 'Your email address isn&#8217;t correct.', 'wp-job-manager' ) );
 
 	if ( email_exists( $user_email ) )
-		return new WP_Error( 'validation-error', __( 'This email is already registered, please choose another one.', 'job_manager' ) );
+		return new WP_Error( 'validation-error', __( 'This email is already registered, please choose another one.', 'wp-job-manager' ) );
 
 	// Email is good to go - use it to create a user name
 	$username = sanitize_user( current( explode( '@', $user_email ) ) );
@@ -270,9 +271,10 @@ function wp_job_manager_create_account( $account_email ) {
 
 	// Create account
 	$new_user = array(
-    	'user_login' => $username,
-    	'user_pass'  => $password,
-    	'user_email' => $user_email
+		'user_login' => $username,
+		'user_pass'  => $password,
+		'user_email' => $user_email,
+		'role'       => $role
     );
 
     $user_id = wp_insert_user( apply_filters( 'job_manager_create_account_data', $new_user ) );
@@ -290,3 +292,56 @@ function wp_job_manager_create_account( $account_email ) {
     return true;
 }
 endif;
+
+/**
+ * True if an the user can post a job. If accounts are required, and reg is enabled, users can post (they signup at the same time).
+ *
+ * @return bool
+ */
+function job_manager_user_can_post_job() {
+	$can_post = true;
+
+	if ( ! is_user_logged_in() ) {
+		if ( job_manager_user_requires_account() && ! job_manager_enable_registration() ) {
+			$can_post = false;
+		}
+	}
+
+	return apply_filters( 'job_manager_user_can_post_job', $can_post );
+}
+
+/**
+ * True if an the user can edit a job.
+ *
+ * @return bool
+ */
+function job_manager_user_can_edit_job( $job_id ) {
+	$can_edit = true;
+	$job      = get_post( $job_id );
+
+	if ( ! is_user_logged_in() ) {
+		$can_edit = false;
+	} elseif ( $job->post_author != get_current_user_id() ) {
+		$can_edit = false;
+	}
+
+	return apply_filters( 'job_manager_user_can_edit_job', $can_edit, $job_id );
+}
+
+/**
+ * True if registration is enabled.
+ *
+ * @return bool
+ */
+function job_manager_enable_registration() {
+	return apply_filters( 'job_manager_enable_registration', get_option( 'job_manager_enable_registration' ) == 1 ? true : false );
+}
+
+/**
+ * True if an account is required to post a job.
+ *
+ * @return bool
+ */
+function job_manager_user_requires_account() {
+	return apply_filters( 'job_manager_user_requires_account', get_option( 'job_manager_user_requires_account' ) == 1 ? true : false );
+}
