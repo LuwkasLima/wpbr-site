@@ -13,3 +13,6 @@
 [submodule "wp-content/plugins/geouser"]
 	path = wp-content/plugins/geouser
 	url = https://github.com/wpbrasil/wpbr-geouser.git
+[submodule "wp-content/plugins/glossario"]
+	path = wp-content/plugins/glossario
+	url = https://github.com/wpbrasil/glossario.git
