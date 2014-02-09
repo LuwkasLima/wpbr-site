@@ -745,7 +745,7 @@ msgstr "Tamanho máximo de arquivo: %s. Imagens permitidas: jpg, gif, png."
 
 #: templates/job-application.php:5
 msgid "Apply for job"
-msgstr "Çandidatar-se à vaga"
+msgstr "Candidatar-se à vaga"
 
 #: templates/job-application.php:12
 msgid ""
