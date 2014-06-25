@@ -108,18 +108,15 @@ function the_job_status( $post = null ) {
  * @return string
  */
 function get_the_job_status( $post = null ) {
-	$post = get_post( $post );
+	$post     = get_post( $post );
+	$status   = $post->post_status;
+	$statuses = get_job_listing_post_statuses();
 
-	$status = $post->post_status;
-
-	if ( $status == 'publish' )
-		$status = __( 'Active', 'wp-job-manager' );
-	elseif ( $status == 'expired' )
-		$status = __( 'Expired', 'wp-job-manager' );
-	elseif ( $status == 'pending' )
-		$status = __( 'Pending Review', 'wp-job-manager' );
-	else
+	if ( isset( $statuses[ $status ] ) ) {
+		$status = $statuses[ $status ];
+	} else {
 		$status = __( 'Inactive', 'wp-job-manager' );
+	}
 
 	return apply_filters( 'the_job_status', $status, $post );
 }
@@ -194,7 +191,7 @@ function get_the_job_application_method( $post = null ) {
 		$method->type      = 'email';
 		$method->raw_email = $apply;
 		$method->email     = antispambot( $apply );
-		$method->subject   = 'Job Application via "' . $post->post_title . '" listing on ' . home_url();
+		$method->subject   = apply_filters( 'job_manager_application_email_subject', sprintf( __( 'Job Application via "%s" listing on %s', 'wp-job-manager' ), $post->post_title, home_url() ), $post );
 	} else {
 		if ( strpos( $apply, 'http' ) !== 0 )
 			$apply = 'http://' . $apply;
@@ -248,7 +245,7 @@ function the_job_location( $map_link = true, $post = null ) {
 
 	if ( $location ) {
 		if ( $map_link )
-			echo apply_filters( 'the_job_location_map_link', '<a class="google_map_link" href="http://maps.google.com/maps?q=' . urlencode( $location ) . '&zoom=14&size=512x512&maptype=roadmap&sensor=false">' . $location . '</a>', $location, $post );
+			echo apply_filters( 'the_job_location_map_link', '<a class="google_map_link" href="http://maps.google.com/maps?q=' . urlencode( $location ) . '&zoom=14&size=512x512&maptype=roadmap&sensor=false" target="_blank">' . $location . '</a>', $location, $post );
 		else
 			echo $location;
 	} else {
@@ -280,8 +277,6 @@ function get_the_job_location( $post = null ) {
  * @return void
  */
 function the_company_logo( $size = 'full', $default = null, $post = null ) {
-	global $job_manager;
-
 	$logo = get_the_company_logo( $post );
 
 	if ( ! empty( $logo ) && ( strstr( $logo, 'http' ) || file_exists( $logo ) ) ) {
@@ -327,7 +322,8 @@ function job_manager_get_resized_image( $logo, $size ) {
 		$img_width  = $_wp_additional_image_sizes[ $size ]['width'];
 		$img_height = $_wp_additional_image_sizes[ $size ]['height'];
 
-		$logo_path         = str_replace( home_url('/'), ABSPATH, $logo );
+		$upload_dir        = wp_upload_dir();
+		$logo_path         = str_replace( $upload_dir['baseurl'], $upload_dir['basedir'], $logo );
 		$path_parts        = pathinfo( $logo_path );
 		$resized_logo_path = str_replace( '.' . $path_parts['extension'], '-' . $size . '.' . $path_parts['extension'], $logo_path );
 
@@ -396,10 +392,17 @@ function get_the_company_name( $post = null ) {
  */
 function get_the_company_website( $post = null ) {
 	$post = get_post( $post );
+
 	if ( $post->post_type !== 'job_listing' )
 		return;
 
-	return apply_filters( 'the_company_website', $post->_company_website, $post );
+	$website = $post->_company_website;
+
+	if ( $website && ! strstr( $website, 'http:' ) && ! strstr( $website, 'https:' ) ) {
+		$website = 'http://' . $website;
+	}
+
+	return apply_filters( 'the_company_website', $website, $post );
 }
 
 /**
@@ -454,7 +457,7 @@ function the_company_twitter( $before = '', $after = '', $echo = true, $post = n
 		return;
 
 	$company_twitter = esc_attr( strip_tags( $company_twitter ) );
-	$company_twitter = $before . '<a href="http://twitter.com/' . $company_twitter . '" class="company_twitter">' . $company_twitter . '</a>' . $after;
+	$company_twitter = $before . '<a href="http://twitter.com/' . $company_twitter . '" class="company_twitter" target="_blank">' . $company_twitter . '</a>' . $after;
 
 	if ( $echo )
 		echo $company_twitter;
@@ -506,22 +509,34 @@ function job_listing_class( $class = '', $post_id = null ) {
  */
 function get_job_listing_class( $class = '', $post_id = null ) {
 	$post = get_post( $post_id );
-	if ( $post->post_type !== 'job_listing' )
-		return array();
 
+	if ( $post->post_type !== 'job_listing' ) {
+		return array();
+	}
+	
 	$classes = array();
 
-	if ( empty( $post ) )
+	if ( empty( $post ) ) {
 		return $classes;
+	}
 
 	$classes[] = 'job_listing';
 	$classes[] = 'job-type-' . sanitize_title( get_the_job_type()->name );
 
-	if ( is_position_filled( $post ) )
+	if ( is_position_filled( $post ) ) {
 		$classes[] = 'job_position_filled';
+	}
 
-	if ( is_position_featured( $post ) )
+	if ( is_position_featured( $post ) ) {
 		$classes[] = 'job_position_featured';
+	}
+	
+	if ( ! empty( $class ) ) {
+		if ( ! is_array( $class ) ) {
+			$class = preg_split( '#\s+#', $class );
+		}
+		$classes = array_merge( $classes, $class );
+	}
 
 	return get_post_class( $classes, $post->ID );
 }

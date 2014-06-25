@@ -16,7 +16,6 @@ class WP_Job_Manager_Install {
 	public function __construct() {
 		$this->init_user_roles();
 		$this->default_terms();
-		$this->default_meta();
 		$this->cron();
 		delete_transient( 'wp_job_manager_addons_html' );
 		update_option( 'wp_job_manager_version', JOB_MANAGER_VERSION );
@@ -36,6 +35,12 @@ class WP_Job_Manager_Install {
 
 		if ( is_object( $wp_roles ) ) {
 			$wp_roles->add_cap( 'administrator', 'manage_job_listings' );
+
+			add_role( 'employer', __( 'Employer', 'wp-job-manager' ), array(
+			    'read' 						=> true,
+			    'edit_posts' 				=> false,
+			    'delete_posts' 				=> false
+			) );
 		}
 	}
 
@@ -46,8 +51,9 @@ class WP_Job_Manager_Install {
 	 * @return void
 	 */
 	public function default_terms() {
-		if ( get_option( 'job_manager_installed_terms' ) == 1 )
+		if ( get_option( 'job_manager_installed_terms' ) == 1 ) {
 			return;
+		}
 
 		$taxonomies = array(
 			'job_listing_type' => array(
@@ -71,26 +77,13 @@ class WP_Job_Manager_Install {
 	}
 
 	/**
-	 * Add default meta values for all posts
-	 */
-	public function default_meta() {
-		$jobs = get_posts( array(
-			'post_type'      => 'job_listing',
-			'posts_per_page' => -1,
-			'fields'         => 'ids'
-		) );
-
-		foreach ( $jobs as $job ) {
-			add_post_meta( $job, '_featured', 0, true );
-		}
-	}
-
-	/**
 	 * Setup cron jobs
 	 */
 	public function cron() {
 		wp_clear_scheduled_hook( 'job_manager_check_for_expired_jobs' );
+		wp_clear_scheduled_hook( 'job_manager_delete_old_previews' );
 		wp_schedule_event( time(), 'hourly', 'job_manager_check_for_expired_jobs' );
+		wp_schedule_event( time(), 'daily', 'job_manager_delete_old_previews' );
 	}
 }
 

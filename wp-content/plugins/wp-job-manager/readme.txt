@@ -3,8 +3,8 @@ Contributors: mikejolley
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=mike.jolley@me.com&currency_code=&amount=&return=&item_name=Buy+me+a+coffee+for+A+New+Job+Board+Plugin+for+WordPress
 Tags: job listing, job board, job, jobs, company, hiring, employment, employees, candidate, freelance, internship
 Requires at least: 3.8
-Tested up to: 3.8
-Stable tag: 1.7.1
+Tested up to: 3.9
+Stable tag: 1.12.1
 
 Manage job listings from the WordPress admin panel, and allow users to post jobs directly to your site.
 
@@ -25,11 +25,11 @@ WP Job Manager is a **lightweight** plugin for adding job-board functionality to
 
 The plugin comes with several shortcodes to output jobs in various formats, and since its built with Custom Post Types you are free to extend it further through themes.
 
-[Read more about WP Job Manager](http://mikejolley.com/projects/wp-job-manager/).
+[Read more about WP Job Manager](https://wpjobmanager.com/).
 
 = Documentation =
 
-Documentation will be maintained on the [GitHub Wiki here](https://github.com/mikejolley/wp-job-manager/wiki).
+Documentation for the core plugin and add-ons can be found [on the docs site here](https://wpjobmanager.com/documentation/).
 
 = Add-ons =
 
@@ -37,9 +37,10 @@ Additonal functionality can be added through add-ons - you can browse these afte
 
 Some notable add-ons include:
 
-* [Simple Paid Listings](http://mikejolley.com/projects/wp-job-manager/add-ons/simple-paid-listings/) - Charge users a single fee to post a job via Stripe or PayPal.
-* [WooCommerce Paid Lisings](http://mikejolley.com/projects/wp-job-manager/add-ons/woocommerce-paid-listings/) - Charge users to post jobs using WooCommerce to take payment.
-* [Job Alerts](http://mikejolley.com/projects/wp-job-manager/add-ons/job-alerts/) - Add saved search/email alert functionality.
+* [Simple Paid Listings](https://wpjobmanager.com/add-ons/simple-paid-listings/) - Charge users a single fee to post a job via Stripe or PayPal.
+* [WooCommerce Paid Lisings](https://wpjobmanager.com/add-ons/wc-paid-listings/) - Charge users to post jobs using WooCommerce to take payment.
+* [Job Alerts](https://wpjobmanager.com/add-ons/job-alerts/) - Add saved search/email alert functionality.
+* [Resume Manager](https://wpjobmanager.com/add-ons/resume-manager/) - Add a resume submission area for employers to browse.
 
 = Contributing and reporting bugs =
 
@@ -49,7 +50,7 @@ You can contribute code to this plugin via GitHub: [https://github.com/mikejolle
 
 Use the WordPress.org forums for community support - I cannot offer support directly for free. If you spot a bug, you can of course log it on [Github](https://github.com/mikejolley/wp-job-manager) instead where I can act upon it more efficiently.
 
-If you want help with a customisation, hire a developer!
+If you want help with a customisation, hire a developer! [http://jobs.wordpress.net/](http://jobs.wordpress.net/) is a good place to start.
 
 == Installation ==
 
@@ -77,7 +78,7 @@ Once installed:
 
 **Note when using shortcodes**, if the content looks blown up/spaced out/poorly styled, edit your page and above the visual editor click on the 'text' tab. Then remove any 'pre' or 'code' tags wrapping your shortcode.
 
-For more information, [read the documentation](https://github.com/mikejolley/wp-job-manager/wiki).
+For more information, [read the documentation](https://wpjobmanager.com/documentation/).
 
 == Screenshots ==
 
@@ -89,6 +90,109 @@ For more information, [read the documentation](https://github.com/mikejolley/wp-
 6. Job listings in admin.
 
 == Changelog ==
+
+= 1.12.1 =
+* Job submission form categories must not hide empty categories.
+
+= 1.12.0 =
+* On the job submission form, display hierarchical categories.
+* Use job_manager_ prefixed hooks for registration (register_post/registration_errors/register_form) to prevent issues with Captcha plugins.
+* Pass $post to job_manager_application_email_subject
+* Additonal hooks in job-filters template, and moved out job types output to separate template file.
+* Option to set the job dashboard page slug so plugins know where to look.
+* Allow you@yourdomain.com to be translated.
+* Make taxonomies hidden unless current_theme_supports( 'job-manager-templates' )
+* Adjusted job application area styling and added some additonal filters.
+* Improve backend order status selection.
+* Added some responsive styles for job lists.
+* Allow users to relist a job from the frontend. (Ensure WC Paid Listings and Simple Paid Listings are updated to support this).
+
+= 1.11.1 =
+* Fix ajax filters 'true' for show_filters
+* Fix geocoding for certain address strings
+* Fix keywords typo
+* Remove deprecated $wpdb->escape calls. Replaced with esc_sql
+
+= 1.11.0 =
+* Switch geocode to json and improve error checking.
+* If query limit is reached, stop making requests for a while.
+* Added extra data inside job_feed.
+* Few extra icons in font.
+* Additonal hooks in single template.
+* Pick up search_category from querystring to set default/selected category.
+* Ability to define selected_job_types for the jobs shortcode which will set the default job type filters.
+* Took out show_featured_only arg for the [jobs] shortcode and added 'featured' which can be set to true or false to show or hide featured jobs, or left null to show both.
+* Removed nonce from frontend job submission form to prevent issues with caching.
+
+= 1.10.0 = 
+* Trigger change on 'enter' when filtering jobs.
+* Updated add-ons page to pull from wpjobmanager.com.
+* Updated links.
+* Fixed support for custom upload URLs.
+* Choose/limit application method to email, url or either.
+* Default application value (if logged in) set to user's email address.
+* show_featured_only option for [jobs] shortcode.
+* Add required-field class around required inputs.
+* Enable paste as text in wp-editor field.
+
+= 1.9.3 = 
+* Fix email URLs.
+* Target blank for application URLs.
+* Add posted by (author) setting in backend.
+* When saving jobs, ensure _featured and _filled are set.
+* Load admin scripts conditionally.
+
+= 1.9.2 = 
+* Fix missing parameter in application_details_url causing URLs to be missing when applying.
+
+= 1.9.1 =
+* Removed resource heavy 'default_meta' function from the installation process.
+
+= 1.9.0 =
+* Template - Split off URL and email application methods and added new hooks. This allows other plugins to manipulate the content.
+* Pass $values to edit job save function so permalinks are preserved.
+* When showing filters, ensure we check by slug if category is non-numeric.
+* Give listings ul a min height so that loading image is visible.
+* content-no-jobs-found.php template.
+* Fix apostrophe direction in signin template.
+* Bulk expire jobs.
+* submit_job_form_required_label hook.
+* ability to set default state for selects on submit form.
+* allow passed in classes in get_job_listing_class function.
+* Hook in the content only if in_the_loop(). Fixes issues with jobify and yoast SEO.
+* Removed .clear mixin to prevent theme conflicts.
+
+= 1.8.2 =
+* For initial load, target all .job_filters areas. Jobify compat.
+
+= 1.8.1 = 
+* Fix - Corrected check to see if any category terms with jobs exist
+
+= 1.8.0 =
+* Feature - Take search/location vars from the querystring if set
+* Feature - Option to choose role for registration, and added an 'employer' role.
+* Feature - Support for comma separated keywords when searching
+* Fix - Use add_post_meta when editing a job to maintain featured status
+* Fix - category ordering
+* Fix - searching for keyword + location at the same time
+* Fix - Only show categories select box when they exist
+* Dev - job_manager_application_email_subject filter
+
+= 1.7.3 =
+* Some changes to file uploads to support custom mime types
+* Updated icon file (http://fontello.com/)
+* Fix category rss links
+* When doing a location search, search geolocation data
+* Fix notices when removing all company fields
+* Made jslint happy with ajax-filters.js
+* Use get_option( 'default_role' ) when creating a user
+* Grunt for release
+
+= 1.7.2 =
+* Preserve line breaks when saving textarea fields in admin
+* Hide 'showing all x' when no filters are chosen.
+* Register 'preview' status so that the counts are correct.
+* Delete previews via cron job.
 
 = 1.7.1 =
 * Updated textdomain to wp-job-manager

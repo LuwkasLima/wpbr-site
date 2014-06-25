@@ -35,8 +35,6 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 	 * Submit Step
 	 */
 	public static function submit() {
-		global $job_manager, $post;
-
 		$job = get_post( self::$job_id );
 
 		if ( empty( self::$job_id  ) || $job->post_status !== 'publish' ) {
@@ -63,7 +61,7 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 					break;
 					case 'job_category' :
 						if ( ! isset( self::$fields[ $group_key ][ $key ]['value'] ) )
-							self::$fields[ $group_key ][ $key ]['value'] = current( wp_get_object_terms( $job->ID, 'job_listing_category', array( 'fields' => 'slugs' ) ) );
+							self::$fields[ $group_key ][ $key ]['value'] = current( wp_get_object_terms( $job->ID, 'job_listing_category', array( 'fields' => 'ids' ) ) );
 					break;
 					default:
 						if ( ! isset( self::$fields[ $group_key ][ $key ]['value'] ) )
@@ -91,8 +89,9 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 	 * Submit Step is posted
 	 */
 	public static function submit_handler() {
-		if ( empty( $_POST['submit_job'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'submit_form_posted' ) )
+		if ( empty( $_POST['submit_job'] ) ) {
 			return;
+		}
 
 		try {
 
@@ -100,11 +99,12 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 			$values = self::get_posted_fields();
 
 			// Validate required
-			if ( is_wp_error( ( $return = self::validate_fields( $values ) ) ) )
+			if ( is_wp_error( ( $return = self::validate_fields( $values ) ) ) ) {
 				throw new Exception( $return->get_error_message() );
+			}
 
 			// Update the job
-			self::save_job( $values['job']['job_title'], $values['job']['job_description'], 'publish' );
+			self::save_job( $values['job']['job_title'], $values['job']['job_description'], 'publish', $values );
 			self::update_job_data( $values );
 
 			// Successful

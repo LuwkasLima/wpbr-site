@@ -19,36 +19,38 @@ class WP_Job_Manager_Ajax {
 	 * Get listings via ajax
 	 */
 	public function get_listings() {
-		global $job_manager, $wpdb;
-
-		$result            = array();
-		$search_location   = sanitize_text_field( stripslashes( $_POST['search_location'] ) );
-		$search_keywords   = sanitize_text_field( stripslashes( $_POST['search_keywords'] ) );
-		$search_categories = isset( $_POST['search_categories'] ) ? $_POST['search_categories'] : '';
-		$filter_job_types  = isset( $_POST['filter_job_type'] ) ? array_filter( array_map( 'sanitize_title', (array) $_POST['filter_job_type'] ) ) : null;
+		$result             = array();
+		$search_location    = sanitize_text_field( stripslashes( $_POST['search_location'] ) );
+		$search_keywords    = sanitize_text_field( stripslashes( $_POST['search_keywords'] ) );
+		$search_categories  = isset( $_POST['search_categories'] ) ? $_POST['search_categories'] : '';
+		$filter_job_types   = isset( $_POST['filter_job_type'] ) ? array_filter( array_map( 'sanitize_title', (array) $_POST['filter_job_type'] ) ) : null;
 
 		if ( is_array( $search_categories ) ) {
-			$search_categories = array_map( 'sanitize_text_field', array_map( 'stripslashes', $search_categories ) );
+			$search_categories = array_filter( array_map( 'sanitize_text_field', array_map( 'stripslashes', $search_categories ) ) );
 		} else {
-			$search_categories = array( sanitize_text_field( stripslashes( $search_categories ) ), 0 );
+			$search_categories = array_filter( array( sanitize_text_field( stripslashes( $search_categories ) ) ) );
 		}
 
 		$args = array(
-			'search_location'   => $search_location,
-			'search_keywords'   => $search_keywords,
-			'search_categories' => array_filter( $search_categories ),
-			'job_types'         => is_null( $filter_job_types ) ? '' : $filter_job_types + array( 0 ),
-			'orderby'           => sanitize_text_field( $_POST['orderby'] ),
-			'order'             => sanitize_text_field( $_POST['order'] ),
-			'offset'            => ( absint( $_POST['page'] ) - 1 ) * absint( $_POST['per_page'] ),
-			'posts_per_page'    => absint( $_POST['per_page'] )
+			'search_location'    => $search_location,
+			'search_keywords'    => $search_keywords,
+			'search_categories'  => $search_categories,
+			'job_types'          => is_null( $filter_job_types ) ? '' : $filter_job_types + array( 0 ),
+			'orderby'            => sanitize_text_field( $_POST['orderby'] ),
+			'order'              => sanitize_text_field( $_POST['order'] ),
+			'offset'             => ( absint( $_POST['page'] ) - 1 ) * absint( $_POST['per_page'] ),
+			'posts_per_page'     => absint( $_POST['per_page'] )
 		);
 
-		$jobs = get_job_listings( $args );
-
-		$result['found_jobs'] = false;
+		if ( isset( $_POST['featured'] ) && ( $_POST['featured'] === 'true' || $_POST['featured'] === 'false' ) ) {
+			$args['featured'] = $_POST['featured'] === 'true' ? true : false;
+		}
 
 		ob_start();
+		
+		$jobs = get_job_listings( apply_filters( 'job_manager_get_listings_args', $args ) );
+
+		$result['found_jobs'] = false;
 
 		if ( $jobs->have_posts() ) : $result['found_jobs'] = true; ?>
 
@@ -60,7 +62,7 @@ class WP_Job_Manager_Ajax {
 
 		<?php else : ?>
 
-			<li class="no_job_listings_found"><?php _e( 'No more jobs found matching your selection.', 'wp-job-manager' ); ?></li>
+			<?php get_job_manager_template_part( 'content', 'no-jobs-found' ); ?>
 
 		<?php endif;
 
@@ -94,10 +96,15 @@ class WP_Job_Manager_Ajax {
 
 			if ( $search_categories ) {
 				foreach ( $search_categories as $category ) {
-					$category = get_term_by( 'id', $category, 'job_listing_category' );
-
-					if ( ! is_wp_error( $category ) )
-						$showing_categories[] = $category->name;
+					if ( ! is_numeric( $category ) ) {
+						$category_object = get_term_by( 'slug', $category, 'job_listing_category' );
+					} 
+					if ( is_numeric( $category ) || is_wp_error( $category_object ) || ! $category_object ) {
+						$category_object = get_term_by( 'id', $category, 'job_listing_category' );
+					}
+					if ( ! is_wp_error( $category_object ) ) {
+						$showing_categories[] = $category_object->name;
+					}
 				}
 			}
 

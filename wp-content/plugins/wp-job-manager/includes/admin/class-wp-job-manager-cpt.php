@@ -22,12 +22,15 @@ class WP_Job_Manager_CPT {
 		add_action( 'load-edit.php', array( $this, 'do_bulk_actions' ) );
 		add_action( 'admin_init', array( $this, 'approve_job' ) );
 		add_action( 'admin_notices', array( $this, 'approved_notice' ) );
+		add_action( 'admin_notices', array( $this, 'expired_notice' ) );
 
-		if ( get_option( 'job_manager_enable_categories' ) )
+		if ( get_option( 'job_manager_enable_categories' ) ) {
 			add_action( "restrict_manage_posts", array( $this, "jobs_by_category" ) );
+		}
 
-		foreach ( array( 'post', 'post-new' ) as $hook )
+		foreach ( array( 'post', 'post-new' ) as $hook ) {
 			add_action( "admin_footer-{$hook}.php", array( $this,'extend_submitdiv_post_status' ) );
+		}
 	}
 
 	/**
@@ -42,6 +45,9 @@ class WP_Job_Manager_CPT {
 		      jQuery(document).ready(function() {
 		        jQuery('<option>').val('approve_jobs').text('<?php _e( 'Approve Jobs', 'wp-job-manager' )?>').appendTo("select[name='action']");
 		        jQuery('<option>').val('approve_jobs').text('<?php _e( 'Approve Jobs', 'wp-job-manager' )?>').appendTo("select[name='action2']");
+
+		        jQuery('<option>').val('expire_jobs').text('<?php _e( 'Expire Jobs', 'wp-job-manager' )?>').appendTo("select[name='action']");
+		        jQuery('<option>').val('expire_jobs').text('<?php _e( 'Expire Jobs', 'wp-job-manager' )?>').appendTo("select[name='action2']");
 		      });
 		    </script>
 		    <?php
@@ -72,7 +78,26 @@ class WP_Job_Manager_CPT {
 							$approved_jobs[] = $post_id;
 					}
 
-				wp_redirect( remove_query_arg( 'approve_jobs', add_query_arg( 'approved_jobs', $approved_jobs, admin_url( 'edit.php?post_type=job_listing' ) ) ) );
+				wp_redirect( add_query_arg( 'approve_jobs', $approved_jobs, remove_query_arg( array( 'approved_jobs', 'expired_jobs' ), admin_url( 'edit.php?post_type=job_listing' ) ) ) );
+				exit;
+			break;
+			case 'expire_jobs' :
+				check_admin_referer( 'bulk-posts' );
+
+				$post_ids     = array_map( 'absint', array_filter( (array) $_GET['post'] ) );
+				$expired_jobs = array();
+
+				if ( ! empty( $post_ids ) )
+					foreach( $post_ids as $post_id ) {
+						$job_data = array(
+							'ID'          => $post_id,
+							'post_status' => 'expired'
+						);
+						if ( wp_update_post( $job_data ) )
+							$expired_jobs[] = $post_id;
+					}
+
+				wp_redirect( add_query_arg( 'expired_jobs', $expired_jobs, remove_query_arg( array( 'approved_jobs', 'expired_jobs' ), admin_url( 'edit.php?post_type=job_listing' ) ) ) );
 				exit;
 			break;
 		}
@@ -112,6 +137,26 @@ class WP_Job_Manager_CPT {
 				echo '<div class="updated"><p>' . sprintf( __( '%s approved', 'wp-job-manager' ), '&quot;' . implode( '&quot;, &quot;', $titles ) . '&quot;' ) . '</p></div>';
 			} else {
 				echo '<div class="updated"><p>' . sprintf( __( '%s approved', 'wp-job-manager' ), '&quot;' . get_the_title( $approved_jobs ) . '&quot;' ) . '</p></div>';
+			}
+		}
+	}
+
+	/**
+	 * Show a notice if we did a bulk action or approval
+	 */
+	public function expired_notice() {
+		 global $post_type, $pagenow;
+
+		if ( $pagenow == 'edit.php' && $post_type == 'job_listing' && ! empty( $_REQUEST['expired_jobs'] ) ) {
+			$expired_jobs = $_REQUEST['expired_jobs'];
+			if ( is_array( $expired_jobs ) ) {
+				$expired_jobs = array_map( 'absint', $expired_jobs );
+				$titles        = array();
+				foreach ( $expired_jobs as $job_id )
+					$titles[] = get_the_title( $job_id );
+				echo '<div class="updated"><p>' . sprintf( __( '%s expired', 'wp-job-manager' ), '&quot;' . implode( '&quot;, &quot;', $titles ) . '&quot;' ) . '</p></div>';
+			} else {
+				echo '<div class="updated"><p>' . sprintf( __( '%s expired', 'wp-job-manager' ), '&quot;' . get_the_title( $expired_jobs ) . '&quot;' ) . '</p></div>';
 			}
 		}
 	}
@@ -230,7 +275,7 @@ class WP_Job_Manager_CPT {
 		if ( ! is_array( $columns ) )
 			$columns = array();
 
-		unset( $columns['title'], $columns['date'] );
+		unset( $columns['title'], $columns['date'], $columns['author'] );
 
 		$columns["job_listing_type"]     = __( "Type", 'wp-job-manager' );
 		$columns["job_position"]         = __( "Position", 'wp-job-manager' );
@@ -254,7 +299,7 @@ class WP_Job_Manager_CPT {
 	 * @return void
 	 */
 	public function custom_columns( $column ) {
-		global $post, $job_manager;
+		global $post;
 
 		switch ( $column ) {
 			case "job_listing_type" :
@@ -348,7 +393,7 @@ class WP_Job_Manager_CPT {
 	 * @return void
 	 */
 	public function extend_submitdiv_post_status() {
-		global $wp_post_statuses, $post, $post_type;
+		global $post, $post_type;
 
 		// Abort if we're on the wrong post type, but only if we got a restriction
 		if ( 'job_listing' !== $post_type ) {
@@ -357,35 +402,24 @@ class WP_Job_Manager_CPT {
 
 		// Get all non-builtin post status and add them as <option>
 		$options = $display = '';
-		foreach ( $wp_post_statuses as $status )
-		{
-			if ( ! $status->_builtin ) {
-				// Match against the current posts status
-				$selected = selected( $post->post_status, $status->name, false );
+		foreach ( get_job_listing_post_statuses() as $status => $name ) {
+			$selected = selected( $post->post_status, $status, false );
 
-				// If we one of our custom post status is selected, remember it
-				$selected AND $display = $status->label;
+			// If we one of our custom post status is selected, remember it
+			$selected AND $display = $name;
 
-				// Build the options
-				$options .= "<option{$selected} value='{$status->name}'>{$status->label}</option>";
-			}
+			// Build the options
+			$options .= "<option{$selected} value='{$status}'>{$name}</option>";
 		}
 		?>
 		<script type="text/javascript">
-			jQuery( document ).ready( function($)
-			{
-				<?php
-				// Add the selected post status label to the "Status: [Name] (Edit)"
-				if ( ! empty( $display ) ) :
-				?>
-					$( '#post-status-display' ).html( '<?php echo $display; ?>' )
-				<?php
-				endif;
+			jQuery( document ).ready( function($) {
+				<?php if ( ! empty( $display ) ) : ?>
+					jQuery( '#post-status-display' ).html( '<?php echo $display; ?>' );
+				<?php endif; ?>
 
-				// Add the options to the <select> element
-				?>
-				var select = $( '#post-status-select' ).find( 'select' );
-				$( select ).append( "<?php echo $options; ?>" );
+				var select = jQuery( '#post-status-select' ).find( 'select' );
+				jQuery( select ).html( "<?php echo $options; ?>" );
 			} );
 		</script>
 		<?php

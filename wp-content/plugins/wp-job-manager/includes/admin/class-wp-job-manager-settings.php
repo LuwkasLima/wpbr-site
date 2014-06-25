@@ -25,6 +25,17 @@ class WP_Job_Manager_Settings {
 	 * @return void
 	 */
 	protected function init_settings() {
+		// Prepare roles option
+		$roles         = get_editable_roles();
+		$account_roles = array();
+
+		foreach ( $roles as $key => $role ) {
+			if ( $key == 'administrator' ) {
+				continue;
+			}
+			$account_roles[ $key ] = $role['name'];
+		}
+
 		$this->settings = apply_filters( 'job_manager_settings',
 			array(
 				'job_listings' => array(
@@ -71,6 +82,14 @@ class WP_Job_Manager_Settings {
 							'attributes' => array()
 						),
 						array(
+							'name'       => 'job_manager_registration_role',
+							'std'        => 'employer',
+							'label'      => __( 'Account Role', 'wp-job-manager' ),
+							'desc'       => __( 'If you enable registration on your job submission form, choose a role for the new user.', 'wp-job-manager' ),
+							'type'       => 'select',
+							'options'    => $account_roles
+						),
+						array(
 							'name'       => 'job_manager_user_requires_account',
 							'std'        => '1',
 							'label'      => __( 'Account required', 'wp-job-manager' ),
@@ -96,10 +115,29 @@ class WP_Job_Manager_Settings {
 							'attributes' => array()
 						),
 						array(
+							'name'       => 'job_manager_allowed_application_method',
+							'std'        => '',
+							'label'      => __( 'Application method', 'wp-job-manager' ),
+							'desc'       => __( 'Choose what employers can use for their job application method.', 'wp-job-manager' ),
+							'type'       => 'select',
+							'options'    => array(
+								''      => __( 'Email address or website URL', 'wp-job-manager' ),
+								'email' => __( 'Email addresses only', 'wp-job-manager' ),
+								'url'   => __( 'Website URLs only', 'wp-job-manager' ),
+							)
+						),
+						array(
 							'name' 		=> 'job_manager_submit_page_slug',
 							'std' 		=> '',
 							'label' 	=> __( 'Submit Page Slug', 'wp-job-manager' ),
 							'desc'		=> __( 'Enter the slug of the page where you have placed the [submit_job_form] shortcode. This lets the plugin know where the form is located.', 'wp-job-manager' ),
+							'type'      => 'input'
+						),
+						array(
+							'name' 		=> 'job_manager_job_dashboard_page_slug',
+							'std' 		=> '',
+							'label' 	=> __( 'Job Dashboard Page Slug', 'wp-job-manager' ),
+							'desc'		=> __( 'Enter the slug of the page where you have placed the [job_dashboard] shortcode. This lets the plugin know where the dashboard is located.', 'wp-job-manager' ),
 							'type'      => 'input'
 						)
 					)
@@ -135,7 +173,7 @@ class WP_Job_Manager_Settings {
 	public function output() {
 		$this->init_settings();
 		?>
-		<div class="wrap">
+		<div class="wrap job-manager-settings-wrap">
 			<form method="post" action="options.php">
 
 				<?php settings_fields( $this->settings_group ); ?>
@@ -146,12 +184,12 @@ class WP_Job_Manager_Settings {
 			    			echo '<a href="#settings-' . sanitize_title( $key ) . '" class="nav-tab">' . esc_html( $section[0] ) . '</a>';
 			    		}
 			    	?>
-			    </h2><br/>
+			    </h2>
 
 				<?php
 					if ( ! empty( $_GET['settings-updated'] ) ) {
 						flush_rewrite_rules();
-						echo '<div class="updated fade"><p>' . __( 'Settings successfully saved', 'wp-job-manager' ) . '</p></div>';
+						echo '<div class="updated fade job-manager-updated"><p>' . __( 'Settings successfully saved', 'wp-job-manager' ) . '</p></div>';
 					}
 
 					foreach ( $this->settings as $key => $section ) {

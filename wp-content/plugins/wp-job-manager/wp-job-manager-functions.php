@@ -17,7 +17,8 @@ function get_job_listings( $args = array() ) {
 		'offset'            => '',
 		'posts_per_page'    => '-1',
 		'orderby'           => 'date',
-		'order'             => 'DESC'
+		'order'             => 'DESC',
+		'featured'          => null
 	) );
 
 	$query_args = array(
@@ -32,12 +33,13 @@ function get_job_listings( $args = array() ) {
 		'meta_query'          => array()
 	);
 
-	if ( ! empty( $args['job_types'] ) )
+	if ( ! empty( $args['job_types'] ) ) {
 		$query_args['tax_query'][] = array(
 			'taxonomy' => 'job_listing_type',
 			'field'    => 'slug',
 			'terms'    => $args['job_types']
 		);
+	}
 
 	if ( ! empty( $args['search_categories'] ) ) {
 		$field = is_numeric( $args['search_categories'][0] ) ? 'term_id' : 'slug';
@@ -49,39 +51,70 @@ function get_job_listings( $args = array() ) {
 		);
 	}
 
-	if ( get_option( 'job_manager_hide_filled_positions' ) == 1 )
+	if ( get_option( 'job_manager_hide_filled_positions' ) == 1 ) {
 		$query_args['meta_query'][] = array(
 			'key'     => '_filled',
 			'value'   => '1',
 			'compare' => '!='
 		);
+	}
 
-	if ( $args['search_location'] )
+	if ( ! is_null( $args['featured'] ) ) {
 		$query_args['meta_query'][] = array(
-			'key'     => '_job_location',
-			'value'   => $args['search_location'],
-			'compare' => 'LIKE'
+			'key'     => '_featured',
+			'value'   => '1',
+			'compare' => $args['featured'] ? '=' : '!='
 		);
+	}
+
+	// Location search - search geolocation data and location meta
+	if ( $args['search_location'] ) {
+		$location_post_ids = array_merge( $wpdb->get_col( $wpdb->prepare( "
+		    SELECT DISTINCT post_id FROM {$wpdb->postmeta}
+		    WHERE meta_key IN ( 'geolocation_city', 'geolocation_country_long', 'geolocation_country_short', 'geolocation_formatted_address', 'geolocation_state_long', 'geolocation_state_short', 'geolocation_street', 'geolocation_zipcode', '_job_location' ) 
+		    AND meta_value LIKE '%%%s%%'
+		", $args['search_location'] ) ), array( 0 ) );
+	} else {
+		$location_post_ids = array();
+	}
 
 	// Keyword search - search meta as well as post content
 	if ( $args['search_keywords'] ) {
-		$post_ids = $wpdb->get_col( $wpdb->prepare( "
-		    SELECT DISTINCT post_id FROM {$wpdb->postmeta}
-		    WHERE meta_value LIKE '%%%s%%'
-		", $args['search_keywords'] ) );
+		$search_keywords              = array_map( 'trim', explode( ',', $args['search_keywords'] ) );
+		$posts_search_keywords_sql    = array();
+		$postmeta_search_keywords_sql = array();
 
-		$post_ids = array_merge( $post_ids, $wpdb->get_col( $wpdb->prepare( "
+		foreach ( $search_keywords as $keyword ) {
+			$postmeta_search_keywords_sql[] = " meta_value LIKE '%" . esc_sql( $keyword ) . "%' ";
+			$posts_search_keywords_sql[]    = " 
+				post_title LIKE '%" . esc_sql( $keyword ) . "%' 
+				OR post_content LIKE '%" . esc_sql( $keyword ) . "%' 
+			";
+		}
+
+		$keyword_post_ids = $wpdb->get_col( "
+		    SELECT DISTINCT post_id FROM {$wpdb->postmeta}
+		    WHERE " . implode( ' OR ', $postmeta_search_keywords_sql ) . "
+		" );
+
+		$keyword_post_ids = array_merge( $keyword_post_ids, $wpdb->get_col( "
 		    SELECT ID FROM {$wpdb->posts}
-		    WHERE post_title LIKE '%%%s%%'
-		    OR post_content LIKE '%%%s%%'
+		    WHERE ( " . implode( ' OR ', $posts_search_keywords_sql ) . " )
 		    AND post_type = 'job_listing'
 		    AND post_status = 'publish'
-		", $args['search_keywords'], $args['search_keywords'] ) ) );
-
-		$query_args['post__in'] = $post_ids + array( 0 );
+		" ), array( 0 ) );
+	} else {
+		$keyword_post_ids = array();
 	}
 
-	$query_args = apply_filters( 'job_manager_get_listings', $query_args );
+	// Merge post ids
+	if ( ! empty( $location_post_ids ) && ! empty( $keyword_post_ids ) ) {
+		$query_args['post__in'] = array_intersect( $location_post_ids, $keyword_post_ids );
+	} elseif ( ! empty( $location_post_ids ) || ! empty( $keyword_post_ids ) ) {
+		$query_args['post__in'] = array_merge( $location_post_ids, $keyword_post_ids );
+	}
+
+	$query_args = apply_filters( 'job_manager_get_listings', $query_args, $args );
 
 	if ( empty( $query_args['meta_query'] ) )
 		unset( $query_args['meta_query'] );
@@ -96,17 +129,36 @@ function get_job_listings( $args = array() ) {
 	}
 
 	// Filter args
-	$query_args = apply_filters( 'get_job_listings_query_args', $query_args );
+	$query_args = apply_filters( 'get_job_listings_query_args', $query_args, $args );
 
-	do_action( 'before_get_job_listings', $query_args );
+	do_action( 'before_get_job_listings', $query_args, $args );
 
 	$result = new WP_Query( $query_args );
 
-	do_action( 'after_get_job_listings', $query_args );
+	do_action( 'after_get_job_listings', $query_args, $args );
 
 	remove_filter( 'posts_clauses', 'order_featured_job_listing' );
 
 	return $result;
+}
+endif;
+
+if ( ! function_exists( 'get_job_listing_post_statuses' ) ) :
+/**
+ * Get post statuses used for jobs
+ *
+ * @access public
+ * @return array
+ */
+function get_job_listing_post_statuses() {
+	return apply_filters( 'job_listing_post_statuses', array(
+		'draft'           => _x( 'Draft', 'post status', 'wp-job-manager' ),
+		'expired'         => _x( 'Expired', 'post status', 'wp-job-manager' ),
+		'preview'         => _x( 'Preview', 'post status', 'wp-job-manager' ),
+		'pending'         => _x( 'Pending approval', 'post status', 'wp-job-manager' ),
+		'pending_payment' => _x( 'Pending payment', 'post status', 'wp-job-manager' ),
+		'publish'         => _x( 'Active', 'post status', 'wp-job-manager' ),
+	) );
 }
 endif;
 
@@ -148,30 +200,32 @@ endif;
 
 if ( ! function_exists( 'get_job_listing_types' ) ) :
 /**
- * Outputs a form to submit a new job to the site from the frontend.
+ * Get job listing types
  *
  * @access public
  * @return array
  */
-function get_job_listing_types() {
+function get_job_listing_types( $fields = 'all' ) {
 	return get_terms( "job_listing_type", array(
-		'orderby'       => 'name',
-	    'order'         => 'ASC',
-	    'hide_empty'    => false,
+		'orderby'    => 'name',
+		'order'      => 'ASC',
+		'hide_empty' => false,
+		'fields'     => $fields
 	) );
 }
 endif;
 
 if ( ! function_exists( 'get_job_listing_categories' ) ) :
 /**
- * Outputs a form to submit a new job to the site from the frontend.
+ * Get job categories
  *
  * @access public
  * @return array
  */
 function get_job_listing_categories() {
-	if ( ! get_option( 'job_manager_enable_categories' ) )
+	if ( ! get_option( 'job_manager_enable_categories' ) ) {
 		return array();
+	}
 
 	return get_terms( "job_listing_category", array(
 		'orderby'       => 'name',
@@ -263,18 +317,19 @@ function wp_job_manager_create_account( $account_email, $role = '' ) {
 
 	// Final error check
 	$reg_errors = new WP_Error();
-	do_action( 'register_post', $username, $user_email, $reg_errors );
-	$reg_errors = apply_filters( 'registration_errors', $reg_errors, $username, $user_email );
+	do_action( 'job_manager_register_post', $username, $user_email, $reg_errors );
+	$reg_errors = apply_filters( 'job_manager_registration_errors', $reg_errors, $username, $user_email );
 
-	if ( $reg_errors->get_error_code() )
+	if ( $reg_errors->get_error_code() ) {
 		return $reg_errors;
+	}
 
 	// Create account
 	$new_user = array(
 		'user_login' => $username,
 		'user_pass'  => $password,
 		'user_email' => $user_email,
-		'role'       => $role
+		'role'       => $role ? $role : get_option( 'default_role' )
     );
 
     $user_id = wp_insert_user( apply_filters( 'job_manager_create_account_data', $new_user ) );
